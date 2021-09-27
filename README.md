@@ -66,3 +66,7 @@ Note: formatted for readability, generated HTML will not have newlines or tabs
 
 ## Custom Tags and Attributes
 Add custom tags with `tag(name, children...)` and custom attributes with `attr(name, value)`
+
+## Inlining
+
+Inline data directly from files with `fromFile(path)` and from resources with `fromResource(path)`
