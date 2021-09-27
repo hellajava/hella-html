@@ -87,9 +87,7 @@ Inline data directly from files with `fromFile(path)` and from resources with `f
 
 ### Java code
 ```java
-style(
-    text(fromResource("style.css"))
-)
+style(fromResource("style.css")))
 ```
 
 ### HTML output
