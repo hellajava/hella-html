@@ -67,6 +67,34 @@ Note: formatted for readability, generated HTML will not have newlines or tabs
 ## Custom Tags and Attributes
 Add custom tags with `tag(name, children...)` and custom attributes with `attr(name, value)`
 
+### Java code
+```java
+tag("myCustomTag", 
+    div(attr("foo", "bar"),
+        text("Hello, custom tags and attributes!")
+    )
+)
+```
+
+### HTML output
+```html
+<myCustomTag><div foo="bar">Hello, custom tags and attributes!</div></myCustomTag>
+```
+
 ## Inlining
 
 Inline data directly from files with `fromFile(path)` and from resources with `fromResource(path)`
+
+### Java code
+```java
+style(
+    text(fromResource("style.css"))
+)
+```
+
+### HTML output
+```html
+<style>
+    (contents of style.css)
+</style>
+```
