@@ -7,6 +7,8 @@ import sh.blake.hella.node.TextNode;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,10 +47,10 @@ public interface Html {
      */
     static TextNode fromResource(String resourcePath) {
         try {
-            String path = Objects.requireNonNull(Html.class.getClassLoader().getResource(resourcePath)).getPath();
-            List<String> lines = Files.readAllLines(Paths.get(path));
+            URL url = Objects.requireNonNull(Html.class.getClassLoader().getResource(resourcePath));
+            List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
             return new TextNode(String.join("\n", lines));
-        } catch (IOException ex) {
+        } catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
     }
