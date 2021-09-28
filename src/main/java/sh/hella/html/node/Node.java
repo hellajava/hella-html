@@ -59,6 +59,27 @@ public class Node {
     }
 
     /**
+     * Remove node.
+     *
+     * @param children the children
+     * @return the node
+     */
+    public Node remove(Collection<Node> children) {
+        this.children.removeAll(children);
+        return this;
+    }
+
+    /**
+     * Remove node.
+     *
+     * @param children the children
+     * @return the node
+     */
+    public Node remove(Node... children) {
+        return remove(Arrays.asList(children));
+    }
+
+    /**
      * Gets name.
      *
      * @return the name
