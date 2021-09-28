@@ -1,4 +1,4 @@
-package sh.blake.hella.node;
+package sh.hella.html.node;
 
 /**
  * The type Attribute node.

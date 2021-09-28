@@ -1,20 +1,17 @@
-package sh.blake.hella;
+package sh.hella.html;
 
-import sh.blake.hella.node.AttributeNode;
-import sh.blake.hella.node.HtmlNode;
-import sh.blake.hella.node.Node;
-import sh.blake.hella.node.TextNode;
+import sh.hella.html.node.AttributeNode;
+import sh.hella.html.node.HtmlNode;
+import sh.hella.html.node.Node;
+import sh.hella.html.node.TextNode;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * The interface Html.

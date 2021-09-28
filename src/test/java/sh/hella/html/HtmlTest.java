@@ -1,10 +1,10 @@
-package sh.blake.hella;
+package sh.hella.html;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import sh.blake.hella.node.Node;
+import sh.hella.html.node.Node;
 
-import static sh.blake.hella.Html.*;
+import static sh.hella.html.Html.*;
 
 public class HtmlTest {
 

@@ -4,7 +4,7 @@ hella-html is a library for generating dynamic HTML in vanilla Java. It is light
 
 Released under the MIT License and free for everyone.
 
-## Getting Started
+## Getting started
 Add the Maven dependency
 
 ```xml
@@ -17,16 +17,16 @@ Add the Maven dependency
 
 or for Gradle users
 ```
-compile "sh.blake.hella:hella-html:1.0.0"
+compile "sh.hella:hella-html:1.0.0"
 ```
 
 And finally the static import
 
 ```java
-import static sh.blake.hella.Html.*;
+import static sh.hella.html.Html.*;
 ```
 
-## Example Usage
+## Example usage
 ### Java code
 
 ```java
@@ -64,7 +64,18 @@ html(
 
 Note: formatted for readability, generated HTML will not have newlines or tabs
 
-## Custom Tags and Attributes
+## Add and remove tags dynamically
+Add and remove tags with the `add` and `remove` methods.
+```java
+Node contentDiv = div(clazz("content"));
+Node textSpan = span(text("Dynamic text!"));
+
+// Use these conditionally, or however you want!
+content.add(textSpan);
+content.remove(textSpan);
+```
+
+## Custom tags and attributes
 Add custom tags with `tag(name, children...)` and custom attributes with `attr(name, value)`
 
 ### Java code
@@ -81,7 +92,7 @@ tag("myCustomTag",
 <myCustomTag><div foo="bar">Hello, custom tags and attributes!</div></myCustomTag>
 ```
 
-## Inlining
+## Inlining content
 
 Inline data directly from files with `fromFile(path)` and from resources with `fromResource(path)`
 
