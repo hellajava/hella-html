@@ -38,7 +38,7 @@ html(
         div(clazz("container"),
             h1(text("Hello world, HTML edition!")),
             p(text("Made hella easy in Java")),
-            a(href("https://hella.blake.sh/"), text("Visit our homepage!"))
+            a(href("https://hella.sh/"), text("Visit our homepage!"))
         )
     )
 ).toString();
