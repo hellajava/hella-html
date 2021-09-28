@@ -17,7 +17,7 @@ Add the Maven dependency.
 
 or for Gradle users...
 ```
-compile "sh.hella:hella-html:1.0.0"
+compile "sh.hella:hella-html:1.0.1"
 ```
 
 And finally the static import.
