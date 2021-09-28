@@ -1,8 +1,11 @@
 # Hella easy HTML in Java
 
-**hella-html** is a library for generating dynamic HTML in vanilla Java. It is lightweight and fast, requires no external dependencies, and supports all standard (and custom) HTML tags.
+**hella-html** is a library that makes it hella easy to generate dynamic HTML in vanilla Java.
 
-Released under the MIT License and free for everyone.
+* Very lightweight and fast, the primary logic is 10 lines of O(n) code
+* Requires no external dependencies
+* Supports all standard (and custom) HTML tags
+* Released under the MIT license and free for everyone
 
 ## Getting started
 Add the Maven dependency.
