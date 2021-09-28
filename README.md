@@ -11,7 +11,7 @@ Add the Maven dependency.
 <dependency>
     <groupId>sh.hella</groupId>
     <artifactId>hella-html</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
