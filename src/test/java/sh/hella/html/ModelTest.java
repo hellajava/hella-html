@@ -9,7 +9,7 @@ import static sh.hella.html.Inlining.*;
 
 public class ModelTest {
 
-    public static class TestModel extends Model {
+    public static class TestModel extends Model<TestModel> {
         public String testString = "Test Button has not been clicked";
         public boolean testSucceeded = false;
 
@@ -19,9 +19,9 @@ public class ModelTest {
                 span(text("Test string: " + testString)),
                 span(text("Succeeded: " + testSucceeded)),
                 button(
-                    onclick(updateState(() -> {
-                        testString = "Test Button has been clicked";
-                        testSucceeded = true;
+                    onclick(updateState((testModel) -> {
+                        testModel.testString = "Test Button has been clicked";
+                        testModel.testSucceeded = true;
                     })),
                     text("Test Button")
                 )

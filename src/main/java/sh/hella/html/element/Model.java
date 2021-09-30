@@ -5,13 +5,15 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * An {@link Element} with state management utilities.
  */
-public abstract class Model extends Element {
+@SuppressWarnings("unchecked")
+public abstract class Model<M extends Model<?>> extends Element implements Cloneable {
     private static final Gson gson = new Gson();
-    private static final Map<String, Model> models = new HashMap<>();
+    private static final Map<String, Model<?>> models = new HashMap<>();
     private transient final String uuid = UUID.randomUUID().toString().replace("-", "");
 
     /**
@@ -47,17 +49,27 @@ public abstract class Model extends Element {
         return super.toString();
     }
 
+    @Override
+    public Model<M> clone() {
+        try {
+            return (Model<M>) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     /**
-     * Update the state of the model. Calls a {@link Runnable} to define the new state and injects HTML/JavaScript code
-     * that will POST the new state to the server.
+     * Update the state of the model. Calls a {@link Consumer} with a clone of this model (to perform modifications on)
+     * and generates JavaScript which calls the server to update the state with the data in the resulting clone.
      *
      * @param stateUpdater The state updating {@code Runnable}.
      * @return The {@code JavaScriptElement} that implements the state update
      */
-    public JavaScriptElement updateState(Runnable stateUpdater) {
-        stateUpdater.run();
+    public JavaScriptElement updateState(Consumer<M> stateUpdater) {
+        M modelClone = (M) clone();
+        stateUpdater.accept(modelClone);
         String url = "http://localhost:4567/model/" + uuid;
-        String js = "_hella_post('" + url + "', " + gson.toJson(this) + ")";
+        String js = "_hella_post('" + url + "', " + gson.toJson(modelClone) + ")";
         return new JavaScriptElement(js);
     }
 
@@ -67,7 +79,7 @@ public abstract class Model extends Element {
      * @param uuid The UUID
      * @return The model
      */
-    public static Model get(String uuid) {
+    public static Model<?> get(String uuid) {
         return models.get(uuid);
     }
 
@@ -77,7 +89,7 @@ public abstract class Model extends Element {
      * @param uuid The UUID
      * @param model The model
      */
-    public static void set(String uuid, Model model) {
+    public static void set(String uuid, Model<?> model) {
         models.put(uuid, model);
     }
 }
