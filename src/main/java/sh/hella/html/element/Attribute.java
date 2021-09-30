@@ -1,9 +1,9 @@
-package sh.hella.html.node;
+package sh.hella.html.element;
 
 /**
  * The type Attribute node.
  */
-public class AttributeNode extends Node {
+public class Attribute extends Element {
     private final String name;
     private final String value;
 
@@ -13,7 +13,7 @@ public class AttributeNode extends Node {
      * @param name  the name
      * @param value the value
      */
-    public AttributeNode(String name, String value) {
+    public Attribute(String name, String value) {
         super("attribute");
         this.name = name;
         this.value = value;

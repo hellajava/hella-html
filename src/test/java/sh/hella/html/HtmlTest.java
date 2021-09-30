@@ -2,7 +2,7 @@ package sh.hella.html;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import sh.hella.html.node.Node;
+import sh.hella.html.element.Element;
 
 import static sh.hella.html.Html.*;
 
@@ -17,7 +17,7 @@ public class HtmlTest {
                 "Expected HTML generated");
     }
 
-    private Node getTestPage() {
+    private Element getTestPage() {
         return html(
             head(
                 title(text("Hello World Test")),

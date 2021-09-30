@@ -1,15 +1,16 @@
-package sh.hella.html.node;
+package sh.hella.html.element;
 
 /**
  * The type Html node.
  */
-public class HtmlNode extends Node {
+public class HtmlDocumentElement extends Element {
+
     /**
      * Instantiates a new Html node.
      *
      * @param children the children
      */
-    public HtmlNode(Node... children) {
+    public HtmlDocumentElement(Element... children) {
         super("html", children);
     }
 

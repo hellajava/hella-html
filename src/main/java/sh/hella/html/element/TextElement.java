@@ -1,9 +1,9 @@
-package sh.hella.html.node;
+package sh.hella.html.element;
 
 /**
  * The type Text node.
  */
-public class TextNode extends Node {
+public class TextElement extends Element {
     private final String text;
 
     /**
@@ -11,7 +11,7 @@ public class TextNode extends Node {
      *
      * @param text the text
      */
-    public TextNode(String text) {
+    public TextElement(String text) {
         super("text");
         this.text = text;
     }

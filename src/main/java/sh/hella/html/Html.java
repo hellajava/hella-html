@@ -1,17 +1,11 @@
 package sh.hella.html;
 
-import sh.hella.html.node.AttributeNode;
-import sh.hella.html.node.HtmlNode;
-import sh.hella.html.node.Node;
-import sh.hella.html.node.TextNode;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
+import sh.hella.html.element.Attribute;
+import sh.hella.html.element.CompositeElement;
+import sh.hella.html.element.HtmlDocumentElement;
+import sh.hella.html.element.JavaScriptElement;
+import sh.hella.html.element.Element;
+import sh.hella.html.element.TextElement;
 
 /**
  * The interface Html.
@@ -19,37 +13,13 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public interface Html {
 
-    // Utilities
-
     /**
-     * From file to text node.
-     *
-     * @param filePath the file path
-     * @return the string
+     * An element that represents a composite group of elements.
+     * @param elements The elements
+     * @return The composite element
      */
-    static TextNode fromFile(String filePath) {
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath));
-            return new TextNode(String.join("\n", lines));
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * From resource to text node.
-     *
-     * @param resourcePath the resource path
-     * @return the string
-     */
-    static TextNode fromResource(String resourcePath) {
-        try {
-            URL url = Objects.requireNonNull(Html.class.getClassLoader().getResource(resourcePath));
-            List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
-            return new TextNode(String.join("\n", lines));
-        } catch (IOException | URISyntaxException ex) {
-            throw new RuntimeException(ex);
-        }
+    static Element elements(Element... elements) {
+        return new CompositeElement(elements);
     }
 
     /**
@@ -58,8 +28,18 @@ public interface Html {
      * @param text the text
      * @return the node
      */
-    static Node text(String text) {
-        return new TextNode(text);
+    static Element text(String text) {
+        return new TextElement(text);
+    }
+
+    /**
+     * Onclick node.
+     *
+     * @param javaScriptNode The javascript node
+     * @return the attribute node
+     */
+    static Attribute onclick(JavaScriptElement javaScriptNode) {
+        return new Attribute("onclick", javaScriptNode.toString());
     }
 
     // Attributes
@@ -71,8 +51,8 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode attr(String key, String value) {
-        return new AttributeNode(key, value);
+    static Attribute attr(String key, String value) {
+        return new Attribute(key, value);
     }
 
     /**
@@ -81,7 +61,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode accept(String value) {
+    static Attribute accept(String value) {
         return attr("href", value);
     }
 
@@ -91,7 +71,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode accept_charset(String value) {
+    static Attribute accept_charset(String value) {
         return attr("accept-charset", value);
     }
 
@@ -101,7 +81,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode accesskey(String value) {
+    static Attribute accesskey(String value) {
         return attr("accesskey", value);
     }
 
@@ -111,7 +91,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode action(String value) {
+    static Attribute action(String value) {
         return attr("action", value);
     }
 
@@ -121,7 +101,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode align(String value) {
+    static Attribute align(String value) {
         return attr("align", value);
     }
 
@@ -131,7 +111,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode allow(String value) {
+    static Attribute allow(String value) {
         return attr("allow", value);
     }
 
@@ -141,7 +121,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode alt(String value) {
+    static Attribute alt(String value) {
         return attr("alt", value);
     }
 
@@ -151,7 +131,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode async(String value) {
+    static Attribute async(String value) {
         return attr("async", value);
     }
 
@@ -161,7 +141,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode autocapitalize(String value) {
+    static Attribute autocapitalize(String value) {
         return attr("autocapitalize", value);
     }
 
@@ -171,7 +151,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode autocomplete(String value) {
+    static Attribute autocomplete(String value) {
         return attr("autocomplete", value);
     }
 
@@ -181,7 +161,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode autofocus(String value) {
+    static Attribute autofocus(String value) {
         return attr("autofocus", value);
     }
 
@@ -191,7 +171,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode autoplay(String value) {
+    static Attribute autoplay(String value) {
         return attr("autoplay", value);
     }
 
@@ -201,7 +181,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode background(String value) {
+    static Attribute background(String value) {
         return attr("background", value);
     }
 
@@ -211,7 +191,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode bgcolor(String value) {
+    static Attribute bgcolor(String value) {
         return attr("bgcolor", value);
     }
 
@@ -221,7 +201,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode border(String value) {
+    static Attribute border(String value) {
         return attr("border", value);
     }
 
@@ -231,7 +211,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode buffered(String value) {
+    static Attribute buffered(String value) {
         return attr("buffered", value);
     }
 
@@ -241,7 +221,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode capture(String value) {
+    static Attribute capture(String value) {
         return attr("capture", value);
     }
 
@@ -251,7 +231,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode challenge(String value) {
+    static Attribute challenge(String value) {
         return attr("challenge", value);
     }
 
@@ -261,7 +241,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode charset(String value) {
+    static Attribute charset(String value) {
         return attr("charset", value);
     }
 
@@ -271,7 +251,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode checked(String value) {
+    static Attribute checked(String value) {
         return attr("checked", value);
     }
 
@@ -281,7 +261,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode cite(String value) {
+    static Attribute cite(String value) {
         return attr("cite", value);
     }
 
@@ -291,7 +271,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode clazz(String value) {
+    static Attribute clazz(String value) {
         return attr("class", value);
     }
 
@@ -301,7 +281,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode classs(String value) {
+    static Attribute classs(String value) {
         return attr("class", value);
     }
 
@@ -311,7 +291,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode code(String value) {
+    static Attribute code(String value) {
         return attr("code", value);
     }
 
@@ -321,7 +301,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode codebase(String value) {
+    static Attribute codebase(String value) {
         return attr("codebase", value);
     }
 
@@ -331,7 +311,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode color(String value) {
+    static Attribute color(String value) {
         return attr("color", value);
     }
 
@@ -341,7 +321,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode cols(String value) {
+    static Attribute cols(String value) {
         return attr("cols", value);
     }
 
@@ -351,7 +331,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode colspan(String value) {
+    static Attribute colspan(String value) {
         return attr("colspan", value);
     }
 
@@ -361,7 +341,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode content(String value) {
+    static Attribute content(String value) {
         return attr("content", value);
     }
 
@@ -371,7 +351,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode contenteditable(String value) {
+    static Attribute contenteditable(String value) {
         return attr("contenteditable", value);
     }
 
@@ -381,7 +361,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode contextmenu(String value) {
+    static Attribute contextmenu(String value) {
         return attr("contextmenu", value);
     }
 
@@ -391,7 +371,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode controls(String value) {
+    static Attribute controls(String value) {
         return attr("controls", value);
     }
 
@@ -401,7 +381,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode coords(String value) {
+    static Attribute coords(String value) {
         return attr("coords", value);
     }
 
@@ -411,7 +391,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode crossorigin(String value) {
+    static Attribute crossorigin(String value) {
         return attr("crossorigin", value);
     }
 
@@ -421,7 +401,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode csp(String value) {
+    static Attribute csp(String value) {
         return attr("csp", value);
     }
 
@@ -431,7 +411,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode data(String value) {
+    static Attribute data(String value) {
         return attr("data", value);
     }
 
@@ -442,7 +422,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode data_(String key, String value) {
+    static Attribute data_(String key, String value) {
         return attr("data-" + key, value);
     }
 
@@ -452,7 +432,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode datetime(String value) {
+    static Attribute datetime(String value) {
         return attr("datetime", value);
     }
 
@@ -462,7 +442,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode decoding(String value) {
+    static Attribute decoding(String value) {
         return attr("decoding", value);
     }
 
@@ -472,7 +452,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode dfault(String value) {
+    static Attribute dfault(String value) {
         return attr("default", value);
     }
 
@@ -482,7 +462,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode defaultt(String value) {
+    static Attribute defaultt(String value) {
         return attr("default", value);
     }
 
@@ -492,7 +472,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode defer(String value) {
+    static Attribute defer(String value) {
         return attr("defer", value);
     }
 
@@ -502,7 +482,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode dir(String value) {
+    static Attribute dir(String value) {
         return attr("dir", value);
     }
 
@@ -512,7 +492,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode dirname(String value) {
+    static Attribute dirname(String value) {
         return attr("dirname", value);
     }
 
@@ -522,7 +502,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode disabled(String value) {
+    static Attribute disabled(String value) {
         return attr("disabled", value);
     }
 
@@ -532,7 +512,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode download(String value) {
+    static Attribute download(String value) {
         return attr("download", value);
     }
 
@@ -542,7 +522,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode draggable(String value) {
+    static Attribute draggable(String value) {
         return attr("draggable", value);
     }
 
@@ -552,7 +532,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode enctype(String value) {
+    static Attribute enctype(String value) {
         return attr("enctype", value);
     }
 
@@ -562,7 +542,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode enterkeyhint(String value) {
+    static Attribute enterkeyhint(String value) {
         return attr("enterkeyhint", value);
     }
 
@@ -572,7 +552,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode forr(String value) {
+    static Attribute forr(String value) {
         return attr("for", value);
     }
 
@@ -582,7 +562,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode form(String value) {
+    static Attribute form(String value) {
         return attr("form", value);
     }
 
@@ -592,7 +572,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode formaction(String value) {
+    static Attribute formaction(String value) {
         return attr("formaction", value);
     }
 
@@ -602,7 +582,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode formenctype(String value) {
+    static Attribute formenctype(String value) {
         return attr("formenctype", value);
     }
 
@@ -612,7 +592,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode formmethod(String value) {
+    static Attribute formmethod(String value) {
         return attr("formmethod", value);
     }
 
@@ -622,7 +602,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode formnovalidate(String value) {
+    static Attribute formnovalidate(String value) {
         return attr("formnovalidate", value);
     }
 
@@ -632,7 +612,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode formtarget(String value) {
+    static Attribute formtarget(String value) {
         return attr("formtarget", value);
     }
 
@@ -642,7 +622,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode headers(String value) {
+    static Attribute headers(String value) {
         return attr("headers", value);
     }
 
@@ -652,7 +632,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode height(String value) {
+    static Attribute height(String value) {
         return attr("height", value);
     }
 
@@ -662,7 +642,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode hidden(String value) {
+    static Attribute hidden(String value) {
         return attr("hidden", value);
     }
 
@@ -672,7 +652,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode high(String value) {
+    static Attribute high(String value) {
         return attr("high", value);
     }
 
@@ -682,7 +662,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode href(String value) {
+    static Attribute href(String value) {
         return attr("href", value);
     }
 
@@ -692,7 +672,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode hreflang(String value) {
+    static Attribute hreflang(String value) {
         return attr("hreflang", value);
     }
 
@@ -702,7 +682,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode http_equiv(String value) {
+    static Attribute http_equiv(String value) {
         return attr("http-equiv", value);
     }
 
@@ -712,7 +692,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode icon(String value) {
+    static Attribute icon(String value) {
         return attr("icon", value);
     }
 
@@ -722,7 +702,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode id(String value) {
+    static Attribute id(String value) {
         return attr("id", value);
     }
 
@@ -732,7 +712,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode importance(String value) {
+    static Attribute importance(String value) {
         return attr("importance", value);
     }
 
@@ -742,7 +722,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode integrity(String value) {
+    static Attribute integrity(String value) {
         return attr("integrity", value);
     }
 
@@ -752,7 +732,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode intrinsicsize(String value) {
+    static Attribute intrinsicsize(String value) {
         return attr("intrinsicsize", value);
     }
 
@@ -762,7 +742,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode inputmode(String value) {
+    static Attribute inputmode(String value) {
         return attr("inputmode", value);
     }
 
@@ -772,7 +752,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode ismap(String value) {
+    static Attribute ismap(String value) {
         return attr("ismap", value);
     }
 
@@ -782,7 +762,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode itemprop(String value) {
+    static Attribute itemprop(String value) {
         return attr("itemprop", value);
     }
 
@@ -792,7 +772,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode keytype(String value) {
+    static Attribute keytype(String value) {
         return attr("keytype", value);
     }
 
@@ -802,7 +782,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode kind(String value) {
+    static Attribute kind(String value) {
         return attr("kind", value);
     }
 
@@ -812,7 +792,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode label(String value) {
+    static Attribute label(String value) {
         return attr("label", value);
     }
 
@@ -822,7 +802,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode lang(String value) {
+    static Attribute lang(String value) {
         return attr("lang", value);
     }
 
@@ -832,7 +812,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode language(String value) {
+    static Attribute language(String value) {
         return attr("language", value);
     }
 
@@ -842,7 +822,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode loading(String value) {
+    static Attribute loading(String value) {
         return attr("loading", value);
     }
 
@@ -852,7 +832,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode list(String value) {
+    static Attribute list(String value) {
         return attr("list", value);
     }
 
@@ -862,7 +842,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode loop(String value) {
+    static Attribute loop(String value) {
         return attr("loop", value);
     }
 
@@ -872,7 +852,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode low(String value) {
+    static Attribute low(String value) {
         return attr("low", value);
     }
 
@@ -882,7 +862,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode manifest(String value) {
+    static Attribute manifest(String value) {
         return attr("manifest", value);
     }
 
@@ -892,7 +872,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode max(String value) {
+    static Attribute max(String value) {
         return attr("max", value);
     }
 
@@ -902,7 +882,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode maxlength(String value) {
+    static Attribute maxlength(String value) {
         return attr("maxlength", value);
     }
 
@@ -912,7 +892,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode minlength(String value) {
+    static Attribute minlength(String value) {
         return attr("minlength", value);
     }
 
@@ -922,7 +902,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode media(String value) {
+    static Attribute media(String value) {
         return attr("media", value);
     }
 
@@ -932,7 +912,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode method(String value) {
+    static Attribute method(String value) {
         return attr("method", value);
     }
 
@@ -942,7 +922,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode min(String value) {
+    static Attribute min(String value) {
         return attr("min", value);
     }
 
@@ -952,7 +932,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode multiple(String value) {
+    static Attribute multiple(String value) {
         return attr("multiple", value);
     }
 
@@ -962,7 +942,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode muted(String value) {
+    static Attribute muted(String value) {
         return attr("muted", value);
     }
 
@@ -972,7 +952,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode name(String value) {
+    static Attribute name(String value) {
         return attr("name", value);
     }
 
@@ -982,7 +962,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode novalidate(String value) {
+    static Attribute novalidate(String value) {
         return attr("novalidate", value);
     }
 
@@ -992,7 +972,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode open(String value) {
+    static Attribute open(String value) {
         return attr("open", value);
     }
 
@@ -1002,7 +982,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode optimum(String value) {
+    static Attribute optimum(String value) {
         return attr("optimum", value);
     }
 
@@ -1012,7 +992,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode pattern(String value) {
+    static Attribute pattern(String value) {
         return attr("pattern", value);
     }
 
@@ -1022,7 +1002,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode ping(String value) {
+    static Attribute ping(String value) {
         return attr("ping", value);
     }
 
@@ -1032,7 +1012,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode placeholder(String value) {
+    static Attribute placeholder(String value) {
         return attr("placeholder", value);
     }
 
@@ -1042,7 +1022,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode poster(String value) {
+    static Attribute poster(String value) {
         return attr("poster", value);
     }
 
@@ -1052,7 +1032,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode preload(String value) {
+    static Attribute preload(String value) {
         return attr("preload", value);
     }
 
@@ -1062,7 +1042,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode radiogroup(String value) {
+    static Attribute radiogroup(String value) {
         return attr("radiogroup", value);
     }
 
@@ -1072,7 +1052,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode readonly(String value) {
+    static Attribute readonly(String value) {
         return attr("readonly", value);
     }
 
@@ -1082,7 +1062,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode referrerpolicy(String value) {
+    static Attribute referrerpolicy(String value) {
         return attr("referrerpolicy", value);
     }
 
@@ -1092,7 +1072,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode rel(String value) {
+    static Attribute rel(String value) {
         return attr("rel", value);
     }
 
@@ -1102,7 +1082,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode required(String value) {
+    static Attribute required(String value) {
         return attr("required", value);
     }
 
@@ -1112,7 +1092,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode reversed(String value) {
+    static Attribute reversed(String value) {
         return attr("reversed", value);
     }
 
@@ -1122,7 +1102,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode rows(String value) {
+    static Attribute rows(String value) {
         return attr("rows", value);
     }
 
@@ -1132,7 +1112,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode rowspan(String value) {
+    static Attribute rowspan(String value) {
         return attr("rowspan", value);
     }
 
@@ -1142,7 +1122,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode sandbox(String value) {
+    static Attribute sandbox(String value) {
         return attr("sandbox", value);
     }
 
@@ -1152,7 +1132,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode scope(String value) {
+    static Attribute scope(String value) {
         return attr("scope", value);
     }
 
@@ -1162,7 +1142,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode scoped(String value) {
+    static Attribute scoped(String value) {
         return attr("scoped", value);
     }
 
@@ -1172,7 +1152,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode selected(String value) {
+    static Attribute selected(String value) {
         return attr("selected", value);
     }
 
@@ -1182,7 +1162,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode shape(String value) {
+    static Attribute shape(String value) {
         return attr("shape", value);
     }
 
@@ -1192,7 +1172,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode size(String value) {
+    static Attribute size(String value) {
         return attr("size", value);
     }
 
@@ -1202,7 +1182,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode sizes(String value) {
+    static Attribute sizes(String value) {
         return attr("sizes", value);
     }
 
@@ -1212,7 +1192,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode slot(String value) {
+    static Attribute slot(String value) {
         return attr("slot", value);
     }
 
@@ -1222,7 +1202,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode span(String value) {
+    static Attribute span(String value) {
         return attr("span", value);
     }
 
@@ -1232,7 +1212,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode spellcheck(String value) {
+    static Attribute spellcheck(String value) {
         return attr("spellcheck", value);
     }
 
@@ -1242,7 +1222,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode src(String value) {
+    static Attribute src(String value) {
         return attr("src", value);
     }
 
@@ -1252,7 +1232,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode srcdoc(String value) {
+    static Attribute srcdoc(String value) {
         return attr("srcdoc", value);
     }
 
@@ -1262,7 +1242,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode srclang(String value) {
+    static Attribute srclang(String value) {
         return attr("srclang", value);
     }
 
@@ -1272,7 +1252,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode srcset(String value) {
+    static Attribute srcset(String value) {
         return attr("srcset", value);
     }
 
@@ -1282,7 +1262,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode start(String value) {
+    static Attribute start(String value) {
         return attr("start", value);
     }
 
@@ -1292,7 +1272,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode step(String value) {
+    static Attribute step(String value) {
         return attr("step", value);
     }
 
@@ -1302,7 +1282,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode style(String value) {
+    static Attribute style(String value) {
         return attr("style", value);
     }
 
@@ -1312,7 +1292,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode summary(String value) {
+    static Attribute summary(String value) {
         return attr("summary", value);
     }
 
@@ -1322,7 +1302,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode tabindex(String value) {
+    static Attribute tabindex(String value) {
         return attr("tabindex", value);
     }
 
@@ -1332,7 +1312,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode target(String value) {
+    static Attribute target(String value) {
         return attr("target", value);
     }
 
@@ -1342,7 +1322,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode title(String value) {
+    static Attribute title(String value) {
         return attr("title", value);
     }
 
@@ -1352,7 +1332,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode translate(String value) {
+    static Attribute translate(String value) {
         return attr("translate", value);
     }
 
@@ -1362,7 +1342,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode type(String value) {
+    static Attribute type(String value) {
         return attr("type", value);
     }
 
@@ -1372,7 +1352,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode usemap(String value) {
+    static Attribute usemap(String value) {
         return attr("usemap", value);
     }
 
@@ -1382,7 +1362,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode value(String value) {
+    static Attribute value(String value) {
         return attr("value", value);
     }
 
@@ -1392,7 +1372,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode width(String value) {
+    static Attribute width(String value) {
         return attr("width", value);
     }
 
@@ -1402,7 +1382,7 @@ public interface Html {
      * @param value the value
      * @return the attribute node
      */
-    static AttributeNode wrap(String value) {
+    static Attribute wrap(String value) {
         return attr("wrap", value);
     }
 
@@ -1415,8 +1395,8 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node tag(String name, Node... children) {
-        return new Node(name, children);
+    static Element tag(String name, Element... children) {
+        return new Element(name, children);
     }
 
     // Main root
@@ -1427,8 +1407,8 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node html(Node... children) {
-        return new HtmlNode(children);
+    static Element html(Element... children) {
+        return new HtmlDocumentElement(children);
     }
 
     // Document metadata
@@ -1439,7 +1419,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node base(Node... children) {
+    static Element base(Element... children) {
         return tag("base", children);
     }
 
@@ -1449,7 +1429,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node head(Node... children) {
+    static Element head(Element... children) {
         return tag("head", children);
     }
 
@@ -1459,7 +1439,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node link(Node... children) {
+    static Element link(Element... children) {
         return tag("link", children);
     }
 
@@ -1469,7 +1449,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node meta(Node... children) {
+    static Element meta(Element... children) {
         return tag("meta", children);
     }
 
@@ -1479,7 +1459,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node style(Node... children) {
+    static Element style(Element... children) {
         return tag("style", children);
     }
 
@@ -1489,7 +1469,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node title(Node... children) {
+    static Element title(Element... children) {
         return tag("title", children);
     }
 
@@ -1501,7 +1481,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node body(Node... children) {
+    static Element body(Element... children) {
         return tag("body", children);
     }
 
@@ -1514,7 +1494,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node address(Node... children) {
+    static Element address(Element... children) {
         return tag("address", children);
     }
 
@@ -1524,7 +1504,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node article(Node... children) {
+    static Element article(Element... children) {
         return tag("article", children);
     }
 
@@ -1534,7 +1514,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node aside(Node... children) {
+    static Element aside(Element... children) {
         return tag("aside", children);
     }
 
@@ -1544,7 +1524,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node footer(Node... children) {
+    static Element footer(Element... children) {
         return tag("footer", children);
     }
 
@@ -1554,7 +1534,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node header(Node... children) {
+    static Element header(Element... children) {
         return tag("header", children);
     }
 
@@ -1564,7 +1544,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h1(Node... children) {
+    static Element h1(Element... children) {
         return tag("h1", children);
     }
     /**
@@ -1573,7 +1553,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h2(Node... children) {
+    static Element h2(Element... children) {
         return tag("h2", children);
     }
 
@@ -1583,7 +1563,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h3(Node... children) {
+    static Element h3(Element... children) {
         return tag("h3", children);
     }
 
@@ -1593,7 +1573,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h4(Node... children) {
+    static Element h4(Element... children) {
         return tag("h4", children);
     }
 
@@ -1603,7 +1583,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h5(Node... children) {
+    static Element h5(Element... children) {
         return tag("h5", children);
     }
 
@@ -1613,7 +1593,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node h6(Node... children) {
+    static Element h6(Element... children) {
         return tag("h6", children);
     }
 
@@ -1623,7 +1603,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node main(Node... children) {
+    static Element main(Element... children) {
         return tag("main", children);
     }
 
@@ -1633,7 +1613,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node nav(Node... children) {
+    static Element nav(Element... children) {
         return tag("nav", children);
     }
 
@@ -1643,7 +1623,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node section(Node... children) {
+    static Element section(Element... children) {
         return tag("section", children);
     }
 
@@ -1655,7 +1635,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node blockquote(Node... children) {
+    static Element blockquote(Element... children) {
         return tag("blockquote", children);
     }
 
@@ -1665,7 +1645,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node dd(Node... children) {
+    static Element dd(Element... children) {
         return tag("dd", children);
     }
 
@@ -1675,7 +1655,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node div(Node... children) {
+    static Element div(Element... children) {
         return tag("div", children);
     }
 
@@ -1685,7 +1665,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node dl(Node... children) {
+    static Element dl(Element... children) {
         return tag("dl", children);
     }
 
@@ -1695,7 +1675,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node dt(Node... children) {
+    static Element dt(Element... children) {
         return tag("dt", children);
     }
 
@@ -1705,7 +1685,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node figcaption(Node... children) {
+    static Element figcaption(Element... children) {
         return tag("figcaption", children);
     }
 
@@ -1715,7 +1695,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node figure(Node... children) {
+    static Element figure(Element... children) {
         return tag("figure", children);
     }
 
@@ -1725,7 +1705,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node hr(Node... children) {
+    static Element hr(Element... children) {
         return tag("hr", children);
     }
 
@@ -1735,7 +1715,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node li(Node... children) {
+    static Element li(Element... children) {
         return tag("li", children);
     }
 
@@ -1745,7 +1725,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node ol(Node... children) {
+    static Element ol(Element... children) {
         return tag("ol", children);
     }
 
@@ -1755,7 +1735,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node p(Node... children) {
+    static Element p(Element... children) {
         return tag("p", children);
     }
 
@@ -1765,7 +1745,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node pre(Node... children) {
+    static Element pre(Element... children) {
         return tag("pre", children);
     }
 
@@ -1775,7 +1755,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node ul(Node... children) {
+    static Element ul(Element... children) {
         return tag("ul", children);
     }
 
@@ -1787,7 +1767,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node a(Node... children) {
+    static Element a(Element... children) {
         return tag("a", children);
     }
 
@@ -1797,7 +1777,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node abbr(Node... children) {
+    static Element abbr(Element... children) {
         return tag("abbr", children);
     }
 
@@ -1807,7 +1787,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node b(Node... children) {
+    static Element b(Element... children) {
         return tag("b", children);
     }
 
@@ -1817,7 +1797,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node bdi(Node... children) {
+    static Element bdi(Element... children) {
         return tag("bdi", children);
     }
 
@@ -1827,7 +1807,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node bdo(Node... children) {
+    static Element bdo(Element... children) {
         return tag("bdo", children);
     }
 
@@ -1837,7 +1817,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node br(Node... children) {
+    static Element br(Element... children) {
         return tag("br", children);
     }
 
@@ -1847,7 +1827,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node cite(Node... children) {
+    static Element cite(Element... children) {
         return tag("cite", children);
     }
 
@@ -1857,7 +1837,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node code(Node... children) {
+    static Element code(Element... children) {
         return tag("code", children);
     }
 
@@ -1867,7 +1847,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node data(Node... children) {
+    static Element data(Element... children) {
         return tag("data", children);
     }
 
@@ -1877,7 +1857,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node dfn(Node... children) {
+    static Element dfn(Element... children) {
         return tag("dfn", children);
     }
 
@@ -1887,7 +1867,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node em(Node... children) {
+    static Element em(Element... children) {
         return tag("em", children);
     }
 
@@ -1897,7 +1877,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node i(Node... children) {
+    static Element i(Element... children) {
         return tag("i", children);
     }
 
@@ -1907,7 +1887,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node kbd(Node... children) {
+    static Element kbd(Element... children) {
         return tag("kbd", children);
     }
 
@@ -1917,7 +1897,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node mark(Node... children) {
+    static Element mark(Element... children) {
         return tag("mark", children);
     }
 
@@ -1927,7 +1907,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node q(Node... children) {
+    static Element q(Element... children) {
         return tag("q", children);
     }
 
@@ -1937,7 +1917,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node rp(Node... children) {
+    static Element rp(Element... children) {
         return tag("rp", children);
     }
 
@@ -1947,7 +1927,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node rt(Node... children) {
+    static Element rt(Element... children) {
         return tag("rt", children);
     }
 
@@ -1957,7 +1937,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node ruby(Node... children) {
+    static Element ruby(Element... children) {
         return tag("ruby", children);
     }
 
@@ -1967,7 +1947,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node s(Node... children) {
+    static Element s(Element... children) {
         return tag("s", children);
     }
 
@@ -1977,7 +1957,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node samp(Node... children) {
+    static Element samp(Element... children) {
         return tag("samp", children);
     }
 
@@ -1987,7 +1967,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node small(Node... children) {
+    static Element small(Element... children) {
         return tag("small", children);
     }
 
@@ -1997,7 +1977,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node span(Node... children) {
+    static Element span(Element... children) {
         return tag("span", children);
     }
 
@@ -2007,7 +1987,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node strong(Node... children) {
+    static Element strong(Element... children) {
         return tag("strong", children);
     }
 
@@ -2017,7 +1997,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node sub(Node... children) {
+    static Element sub(Element... children) {
         return tag("sub", children);
     }
 
@@ -2027,7 +2007,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node sup(Node... children) {
+    static Element sup(Element... children) {
         return tag("sup", children);
     }
 
@@ -2037,7 +2017,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node time(Node... children) {
+    static Element time(Element... children) {
         return tag("time", children);
     }
 
@@ -2047,7 +2027,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node u(Node... children) {
+    static Element u(Element... children) {
         return tag("u", children);
     }
 
@@ -2057,7 +2037,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node var(Node... children) {
+    static Element var(Element... children) {
         return tag("var", children);
     }
 
@@ -2067,7 +2047,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node wbr(Node... children) {
+    static Element wbr(Element... children) {
         return tag("wbr", children);
     }
 
@@ -2079,7 +2059,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node area(Node... children) {
+    static Element area(Element... children) {
         return tag("area", children);
     }
 
@@ -2089,7 +2069,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node audio(Node... children) {
+    static Element audio(Element... children) {
         return tag("audio", children);
     }
 
@@ -2099,7 +2079,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node img(Node... children) {
+    static Element img(Element... children) {
         return tag("img", children);
     }
 
@@ -2109,7 +2089,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node map(Node... children) {
+    static Element map(Element... children) {
         return tag("map", children);
     }
 
@@ -2119,7 +2099,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node track(Node... children) {
+    static Element track(Element... children) {
         return tag("track", children);
     }
 
@@ -2129,7 +2109,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node video(Node... children) {
+    static Element video(Element... children) {
         return tag("video", children);
     }
 
@@ -2141,7 +2121,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node embed(Node... children) {
+    static Element embed(Element... children) {
         return tag("embed", children);
     }
 
@@ -2151,7 +2131,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node iframe(Node... children) {
+    static Element iframe(Element... children) {
         return tag("iframe", children);
     }
 
@@ -2161,7 +2141,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node object(Node... children) {
+    static Element object(Element... children) {
         return tag("objcet", children);
     }
 
@@ -2171,7 +2151,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node param(Node... children) {
+    static Element param(Element... children) {
         return tag("param", children);
     }
 
@@ -2181,7 +2161,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node picture(Node... children) {
+    static Element picture(Element... children) {
         return tag("picture", children);
     }
 
@@ -2191,7 +2171,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node portal(Node... children) {
+    static Element portal(Element... children) {
         return tag("portal", children);
     }
 
@@ -2201,7 +2181,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node source(Node... children) {
+    static Element source(Element... children) {
         return tag("source", children);
     }
 
@@ -2213,7 +2193,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node svg(Node... children) {
+    static Element svg(Element... children) {
         return tag("svg", children);
     }
 
@@ -2223,7 +2203,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node math(Node... children) {
+    static Element math(Element... children) {
         return tag("math", children);
     }
 
@@ -2235,7 +2215,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node canvas(Node... children) {
+    static Element canvas(Element... children) {
         return tag("canvas", children);
     }
 
@@ -2245,7 +2225,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node noscript(Node... children) {
+    static Element noscript(Element... children) {
         return tag("noscript", children);
     }
 
@@ -2255,7 +2235,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node script(Node... children) {
+    static Element script(Element... children) {
         return tag("script", children);
     }
 
@@ -2267,7 +2247,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node del(Node... children) {
+    static Element del(Element... children) {
         return tag("del", children);
     }
 
@@ -2277,7 +2257,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node ins(Node... children) {
+    static Element ins(Element... children) {
         return tag("ins", children);
     }
 
@@ -2289,7 +2269,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node caption(Node... children) {
+    static Element caption(Element... children) {
         return tag("caption", children);
     }
 
@@ -2299,7 +2279,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node col(Node... children) {
+    static Element col(Element... children) {
         return tag("col", children);
     }
 
@@ -2309,7 +2289,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node colgroup(Node... children) {
+    static Element colgroup(Element... children) {
         return tag("colgroup", children);
     }
 
@@ -2319,7 +2299,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node table(Node... children) {
+    static Element table(Element... children) {
         return tag("table", children);
     }
 
@@ -2329,7 +2309,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node tbody(Node... children) {
+    static Element tbody(Element... children) {
         return tag("tbody", children);
     }
 
@@ -2339,7 +2319,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node td(Node... children) {
+    static Element td(Element... children) {
         return tag("td", children);
     }
 
@@ -2349,7 +2329,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node tfoot(Node... children) {
+    static Element tfoot(Element... children) {
         return tag("tfoot", children);
     }
 
@@ -2359,7 +2339,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node th(Node... children) {
+    static Element th(Element... children) {
         return tag("th", children);
     }
 
@@ -2369,7 +2349,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node thead(Node... children) {
+    static Element thead(Element... children) {
         return tag("thead", children);
     }
 
@@ -2379,7 +2359,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node tr(Node... children) {
+    static Element tr(Element... children) {
         return tag("tr", children);
     }
 
@@ -2391,7 +2371,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node button(Node... children) {
+    static Element button(Element... children) {
         return tag("button", children);
     }
 
@@ -2401,7 +2381,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node datalist(Node... children) {
+    static Element datalist(Element... children) {
         return tag("datalist", children);
     }
 
@@ -2411,7 +2391,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node fieldset(Node... children) {
+    static Element fieldset(Element... children) {
         return tag("fieldset", children);
     }
 
@@ -2421,7 +2401,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node form(Node... children) {
+    static Element form(Element... children) {
         return tag("form", children);
     }
 
@@ -2431,7 +2411,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node input(Node... children) {
+    static Element input(Element... children) {
         return tag("input", children);
     }
 
@@ -2441,7 +2421,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node label(Node... children) {
+    static Element label(Element... children) {
         return tag("label", children);
     }
 
@@ -2451,7 +2431,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node legend(Node... children) {
+    static Element legend(Element... children) {
         return tag("legend", children);
     }
 
@@ -2461,7 +2441,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node meter(Node... children) {
+    static Element meter(Element... children) {
         return tag("meter", children);
     }
 
@@ -2471,7 +2451,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node optgroup(Node... children) {
+    static Element optgroup(Element... children) {
         return tag("optgroup", children);
     }
 
@@ -2481,7 +2461,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node option(Node... children) {
+    static Element option(Element... children) {
         return tag("option", children);
     }
 
@@ -2491,7 +2471,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node output(Node... children) {
+    static Element output(Element... children) {
         return tag("output", children);
     }
 
@@ -2501,7 +2481,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node progress(Node... children) {
+    static Element progress(Element... children) {
         return tag("progress", children);
     }
 
@@ -2511,7 +2491,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node select(Node... children) {
+    static Element select(Element... children) {
         return tag("select", children);
     }
 
@@ -2521,7 +2501,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node textarea(Node... children) {
+    static Element textarea(Element... children) {
         return tag("textarea", children);
     }
 
@@ -2533,7 +2513,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node details(Node... children) {
+    static Element details(Element... children) {
         return tag("details", children);
     }
 
@@ -2543,7 +2523,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node dialog(Node... children) {
+    static Element dialog(Element... children) {
         return tag("dialog", children);
     }
 
@@ -2553,7 +2533,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node menu(Node... children) {
+    static Element menu(Element... children) {
         return tag("menu", children);
     }
 
@@ -2563,7 +2543,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node summary(Node... children) {
+    static Element summary(Element... children) {
         return tag("summary", children);
     }
 
@@ -2573,7 +2553,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node slot(Node... children) {
+    static Element slot(Element... children) {
         return tag("slot", children);
     }
 
@@ -2583,7 +2563,7 @@ public interface Html {
      * @param children the children
      * @return the node
      */
-    static Node template(Node... children) {
+    static Element template(Element... children) {
         return tag("template", children);
     }
 }
