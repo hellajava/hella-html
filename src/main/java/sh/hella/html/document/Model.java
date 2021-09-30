@@ -1,4 +1,4 @@
-package sh.hella.html.element;
+package sh.hella.html.document;
 
 import com.google.gson.Gson;
 
@@ -8,39 +8,20 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
- * An {@link Element} with state management utilities.
+ * A {@link Section} with state management utilities.
  */
 @SuppressWarnings("unchecked")
-public abstract class Model<M extends Model<?>> extends Element implements Cloneable {
+public abstract class Model<M extends Model<?>> extends Section implements Cloneable {
     private static final Gson gson = new Gson();
     private static final Map<String, Model<?>> models = new HashMap<>();
     private transient final String uuid = UUID.randomUUID().toString().replace("-", "");
 
     /**
-     * Instantiates a new {@code Model} as a {@code div} tag with children.
-     *
-     * @param children The children
-     */
-    public Model(Element... children) {
-        this("div", children);
-    }
-
-    /**
-     * Instantiates a new {@code Model} with a tag type children.
-     *
-     * @param tag The tag type
-     * @param children The children
-     */
-    public Model(String tag, Element... children) {
-        super(tag, children);
-    }
-
-    /**
      * Renders the model.
      *
-     * @return The element representing the model
+     * @return The elements representing the model
      */
-    public abstract Element render();
+    public abstract Section render();
 
     @Override
     public String toString() {
@@ -62,15 +43,15 @@ public abstract class Model<M extends Model<?>> extends Element implements Clone
      * Update the state of the model. Calls a {@link Consumer} with a clone of this model (to perform modifications on)
      * and generates JavaScript which calls the server to update the state with the data in the resulting clone.
      *
-     * @param stateUpdater The state updating {@code Runnable}.
-     * @return The {@code JavaScriptElement} that implements the state update
+     * @param stateUpdater The {@code Consumer} that updates the state.
+     * @return The {@code JavaScriptSection} that implements the state update
      */
-    public JavaScriptElement updateState(Consumer<M> stateUpdater) {
+    public JavaScriptSection updateState(Consumer<M> stateUpdater) {
         M modelClone = (M) clone();
         stateUpdater.accept(modelClone);
-        String url = "http://localhost:4567/model/" + uuid;
-        String js = "_hella_post('" + url + "', " + gson.toJson(modelClone) + ")";
-        return new JavaScriptElement(js);
+        String url = "http://localhost:4567/_hella_model/" + uuid;
+        String js = "_hella_put('" + url + "', " + gson.toJson(modelClone) + ")";
+        return new JavaScriptSection(js);
     }
 
     /**

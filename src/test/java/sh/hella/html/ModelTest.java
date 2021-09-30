@@ -1,11 +1,11 @@
 package sh.hella.html;
 
 import org.junit.jupiter.api.Test;
-import sh.hella.html.element.Element;
-import sh.hella.html.element.Model;
+import sh.hella.html.document.Model;
+import sh.hella.html.document.Section;
 
 import static sh.hella.html.Html.*;
-import static sh.hella.html.Inlining.*;
+import static sh.hella.html.Utilities.*;
 
 public class ModelTest {
 
@@ -14,16 +14,16 @@ public class ModelTest {
         public boolean testSucceeded = false;
 
         @Override
-        public Element render() {
-            return elements(
+        public Section render() {
+            return div(
                 span(text("Test string: " + testString)),
-                span(text("Succeeded: " + testSucceeded)),
+                when(testSucceeded, span(text("Test succeeded!"))),
                 button(
+                    text("Test Button"),
                     onclick(updateState((testModel) -> {
                         testModel.testString = "Test Button has been clicked";
                         testModel.testSucceeded = true;
-                    })),
-                    text("Test Button")
+                    }))
                 )
             );
         }

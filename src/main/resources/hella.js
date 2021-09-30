@@ -1,6 +1,6 @@
-function _hella_post(url, json) {
+function _hella_put(url, json) {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
+    xhr.open("PUT", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(json));
 }
