@@ -1,12 +1,12 @@
 package sh.hella.html.element;
 
 /**
- * The type Html node.
+ * The type Html element.
  */
 public class HtmlDocumentElement extends Element {
 
     /**
-     * Instantiates a new Html node.
+     * Instantiates a new Html element.
      *
      * @param children the children
      */

@@ -1,14 +1,14 @@
 package sh.hella.html.element;
 
 /**
- * The type Attribute node.
+ * The type Attribute element.
  */
 public class Attribute extends Element {
     private final String name;
     private final String value;
 
     /**
-     * Instantiates a new Attribute node.
+     * Instantiates a new Attribute element.
      *
      * @param name  the name
      * @param value the value

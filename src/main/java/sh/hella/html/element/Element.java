@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The type Node.
+ * The type Element.
  */
 @SuppressWarnings("unused")
 public class Element {
@@ -14,7 +14,7 @@ public class Element {
     private transient final List<Element> children;
 
     /**
-     * Instantiates a new Node.
+     * Instantiates a new Element.
      *
      * @param name     the name
      * @param children the children
@@ -39,10 +39,10 @@ public class Element {
     }
 
     /**
-     * Add node.
+     * Add element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
     public Element add(Collection<Element> children) {
         this.children.addAll(children);
@@ -50,20 +50,20 @@ public class Element {
     }
 
     /**
-     * Add node.
+     * Add element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
     public Element add(Element... children) {
         return add(Arrays.asList(children));
     }
 
     /**
-     * Remove node.
+     * Remove element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
     public Element remove(Collection<Element> children) {
         this.children.removeAll(children);
@@ -71,10 +71,10 @@ public class Element {
     }
 
     /**
-     * Remove node.
+     * Remove element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
     public Element remove(Element... children) {
         return remove(Arrays.asList(children));

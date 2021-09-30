@@ -1,13 +1,13 @@
 package sh.hella.html.element;
 
 /**
- * The type Text node.
+ * The type Text element.
  */
 public class TextElement extends Element {
     private final String text;
 
     /**
-     * Instantiates a new Text node.
+     * Instantiates a new Text element.
      *
      * @param text the text
      */
