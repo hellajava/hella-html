@@ -3,7 +3,6 @@ package sh.hella.html;
 import org.junit.jupiter.api.Test;
 import sh.hella.html.document.Model;
 import sh.hella.html.document.Section;
-
 import static sh.hella.html.Html.*;
 import static sh.hella.html.Utilities.*;
 

@@ -2,7 +2,7 @@ package sh.hella.html;
 
 import sh.hella.html.document.ElementSection;
 import sh.hella.html.document.TextSection;
-import sh.hella.html.util.JavaScriptTypeAdapter;
+import sh.hella.html.util.JavaScriptSerializer;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -102,7 +102,7 @@ public interface Utilities {
     }
 
     static String valueOf(String id) {
-        return JavaScriptTypeAdapter.JS_INJECT_PREFIX + "document.getElementById('" + id + "').value";
+        return JavaScriptSerializer.JS_INJECT_PREFIX + "document.getElementById('" + id + "').value";
     }
 
     /**
