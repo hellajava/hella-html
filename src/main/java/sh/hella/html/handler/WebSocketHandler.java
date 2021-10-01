@@ -38,5 +38,9 @@ public class WebSocketHandler {
 
         UpdateModelResponse response = new UpdateModelResponse(oldModel.uuid, oldModel.render().toString());
         session.getRemote().sendString(Model.OBJECT_MAPPER.writeValueAsString(response));
+
+        if (oldModel.onUpdate() != null) {
+            oldModel.onUpdate().accept(oldModel);
+        }
     }
 }

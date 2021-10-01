@@ -23,6 +23,7 @@ public abstract class Model<M extends Model<?>> extends Section implements Clone
     public static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.get();
     private static final Map<String, Model<?>> models = new HashMap<>();
     public final String uuid = UUID.randomUUID().toString().replace("-", "");
+    private Consumer<M> onUpdate;
 
     public Model() {
         models.put(uuid, this);
@@ -72,5 +73,13 @@ public abstract class Model<M extends Model<?>> extends Section implements Clone
 
     public static Model<?> get(String uuid) {
         return models.get(uuid);
+    }
+
+    public Consumer<M> onUpdate() {
+        return onUpdate;
+    }
+
+    public void onUpdate(Consumer<M> onUpdate) {
+        this.onUpdate = onUpdate;
     }
 }
