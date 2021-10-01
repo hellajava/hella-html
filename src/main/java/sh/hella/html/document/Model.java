@@ -1,20 +1,27 @@
 package sh.hella.html.document;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import sh.hella.html.util.GsonFactory;
+import sh.hella.html.util.JavaScriptTypeAdapter;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static sh.hella.html.Html.id;
+import static spark.Spark.put;
+
 /**
  * A {@link Section} with state management utilities.
  */
 @SuppressWarnings("unchecked")
 public abstract class Model<M extends Model<?>> extends Section implements Cloneable {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = GsonFactory.get();
     private static final Map<String, Model<?>> models = new HashMap<>();
-    private transient final String uuid = UUID.randomUUID().toString().replace("-", "");
+    private final String uuid = UUID.randomUUID().toString().replace("-", "");
+    private final String type = this.getClass().getSimpleName();
 
     /**
      * Renders the model.
@@ -25,8 +32,7 @@ public abstract class Model<M extends Model<?>> extends Section implements Clone
 
     @Override
     public String toString() {
-        set(uuid, this);
-        add(render());
+        add(render().add(id(uuid)));
         return super.toString();
     }
 
@@ -47,10 +53,17 @@ public abstract class Model<M extends Model<?>> extends Section implements Clone
      * @return The {@code JavaScriptSection} that implements the state update
      */
     public JavaScriptSection updateState(Consumer<M> stateUpdater) {
+        set(uuid, this); // TODO: remove these when no longer being used
+        put("/_hella_model/" + uuid, (req, res) -> { // TODO: use a dynamic path
+            Model<?> model = gson.fromJson(req.body(), Model.class);
+            Model.set(uuid, model);
+            return model.render().toString();
+        });
+
         M modelClone = (M) clone();
         stateUpdater.accept(modelClone);
-        String url = "http://localhost:4567/_hella_model/" + uuid;
-        String js = "_hella_put('" + url + "', " + gson.toJson(modelClone) + ")";
+        String js = "_hella_update_model('" + uuid + "', " + gson.toJson(modelClone) + ")";
+        js = js.replace("\"", "&quot;");
         return new JavaScriptSection(js);
     }
 

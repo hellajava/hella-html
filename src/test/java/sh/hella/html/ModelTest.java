@@ -16,12 +16,13 @@ public class ModelTest {
         @Override
         public Section render() {
             return div(
+                input(id("test-field"), type("text")),
                 span(text("Test string: " + testString)),
                 when(testSucceeded, span(text("Test succeeded!"))),
                 button(
                     text("Test Button"),
                     onclick(updateState((testModel) -> {
-                        testModel.testString = "Test Button has been clicked";
+                        testModel.testString = valueOf("test-field");
                         testModel.testSucceeded = true;
                     }))
                 )

@@ -14,10 +14,10 @@ import sh.hella.html.document.TextSection;
 public interface Html {
 
     /**
-     * Text element.
+     * Text section.
      *
      * @param text the text
-     * @return the element
+     * @return the section
      */
     static TextSection text(String text) {
         return new TextSection(text);
