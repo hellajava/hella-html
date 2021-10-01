@@ -30,7 +30,7 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void onMessage(Session session, String message) throws IOException {
-        logger.info("Received message from {}: {}", session.getRemoteAddress(), message);
+        logger.debug("Received message from {}: {}", session.getRemoteAddress(), message);
 
         // TODO: get UUID more directly instead of deserializing twice
         Model newModel = Model.OBJECT_MAPPER.readValue(message, Model.class);
