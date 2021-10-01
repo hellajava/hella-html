@@ -35,12 +35,11 @@ public class WebSocketHandler {
         Model newModel = Model.OBJECT_MAPPER.readValue(message, Model.class);
         Model oldModel = Model.get(newModel.uuid);
         Model.OBJECT_MAPPER.readerForUpdating(oldModel).readValue(message);
-
-        UpdateModelResponse response = new UpdateModelResponse(oldModel.uuid, oldModel.render().toString());
-        session.getRemote().sendString(Model.OBJECT_MAPPER.writeValueAsString(response));
-
         if (oldModel.onUpdate() != null) {
             oldModel.onUpdate().accept(oldModel);
         }
+
+        UpdateModelResponse response = new UpdateModelResponse(oldModel.uuid, oldModel.render().toString());
+        session.getRemote().sendString(Model.OBJECT_MAPPER.writeValueAsString(response));
     }
 }
