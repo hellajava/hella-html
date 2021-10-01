@@ -1,9 +1,9 @@
 package sh.hella.html;
 
 import sh.hella.html.document.AttributeSection;
+import sh.hella.html.document.ElementSection;
 import sh.hella.html.document.HtmlElementSection;
 import sh.hella.html.document.JavaScriptSection;
-import sh.hella.html.document.ElementSection;
 import sh.hella.html.document.Section;
 import sh.hella.html.document.TextSection;
 

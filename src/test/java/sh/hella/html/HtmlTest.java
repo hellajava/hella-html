@@ -4,7 +4,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import sh.hella.html.document.ElementSection;
 
-import static sh.hella.html.Html.*;
+import static sh.hella.html.Html.a;
+import static sh.hella.html.Html.attr;
+import static sh.hella.html.Html.body;
+import static sh.hella.html.Html.div;
+import static sh.hella.html.Html.head;
+import static sh.hella.html.Html.href;
+import static sh.hella.html.Html.html;
+import static sh.hella.html.Html.p;
+import static sh.hella.html.Html.script;
+import static sh.hella.html.Html.text;
+import static sh.hella.html.Html.title;
 
 public class HtmlTest {
 

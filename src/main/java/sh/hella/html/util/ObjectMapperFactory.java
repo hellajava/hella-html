@@ -1,6 +1,5 @@
 package sh.hella.html.util;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.atteo.classindex.ClassIndex;

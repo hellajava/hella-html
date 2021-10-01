@@ -4,8 +4,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import sh.hella.html.document.Model;
 import sh.hella.html.document.Section;
-import static sh.hella.html.Html.*;
-import static sh.hella.html.Utilities.*;
+
+import static sh.hella.html.Html.body;
+import static sh.hella.html.Html.button;
+import static sh.hella.html.Html.div;
+import static sh.hella.html.Html.html;
+import static sh.hella.html.Html.id;
+import static sh.hella.html.Html.input;
+import static sh.hella.html.Html.onclick;
+import static sh.hella.html.Html.script;
+import static sh.hella.html.Html.span;
+import static sh.hella.html.Html.text;
+import static sh.hella.html.Html.type;
+import static sh.hella.html.Utilities.fromResource;
+import static sh.hella.html.Utilities.valueOf;
+import static sh.hella.html.Utilities.when;
 
 public class ModelTest {
 
