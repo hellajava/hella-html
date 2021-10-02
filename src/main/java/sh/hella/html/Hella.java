@@ -10,7 +10,7 @@ import static spark.Spark.webSocket;
 public interface Hella {
 
     /**
-     * Sets .
+     * Sets up the framework.
      */
     static void setup() {
         webSocket("/hella-ws", new WebSocketHandler());
