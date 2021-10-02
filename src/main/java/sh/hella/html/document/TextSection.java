@@ -1,18 +1,17 @@
-package sh.hella.html.node;
+package sh.hella.html.document;
 
 /**
- * The type Text node.
+ * The type TextSection.
  */
-public class TextNode extends Node {
+public class TextSection extends Section {
     private final String text;
 
     /**
-     * Instantiates a new Text node.
+     * Instantiates a new TextSection.
      *
      * @param text the text
      */
-    public TextNode(String text) {
-        super("text");
+    public TextSection(String text) {
         this.text = text;
     }
 

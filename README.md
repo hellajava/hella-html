@@ -70,8 +70,8 @@ Note: formatted for readability, generated HTML will not have newlines or tabs.
 ## Add and remove tags dynamically
 Add and remove tags with the `add` and `remove` methods. Use them conditionally, inside loops, or however else you want.
 ```java
-Node contentDiv = div(clazz("content"));
-Node textSpan = span(text("Dynamic text!"));
+Element contentDiv = div(clazz("content"));
+Element textSpan = span(text("Dynamic text!"));
         
 contentDiv.add(textSpan);
 contentDiv.toString(); // <div class="content"><span>Dynamic text!</span></div>

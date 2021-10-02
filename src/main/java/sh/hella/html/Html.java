@@ -1,17 +1,11 @@
 package sh.hella.html;
 
-import sh.hella.html.node.AttributeNode;
-import sh.hella.html.node.HtmlNode;
-import sh.hella.html.node.Node;
-import sh.hella.html.node.TextNode;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
+import sh.hella.html.document.AttributeSection;
+import sh.hella.html.document.ElementSection;
+import sh.hella.html.document.HtmlElementSection;
+import sh.hella.html.document.JavaScriptSection;
+import sh.hella.html.document.Section;
+import sh.hella.html.document.TextSection;
 
 /**
  * The interface Html.
@@ -19,1489 +13,1466 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public interface Html {
 
-    // Utilities
-
     /**
-     * From file to text node.
-     *
-     * @param filePath the file path
-     * @return the string
-     */
-    static TextNode fromFile(String filePath) {
-        try {
-            List<String> lines = Files.readAllLines(Paths.get(filePath));
-            return new TextNode(String.join("\n", lines));
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * From resource to text node.
-     *
-     * @param resourcePath the resource path
-     * @return the string
-     */
-    static TextNode fromResource(String resourcePath) {
-        try {
-            URL url = Objects.requireNonNull(Html.class.getClassLoader().getResource(resourcePath));
-            List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
-            return new TextNode(String.join("\n", lines));
-        } catch (IOException | URISyntaxException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    /**
-     * Text node.
+     * Text section.
      *
      * @param text the text
-     * @return the node
+     * @return the section
      */
-    static Node text(String text) {
-        return new TextNode(text);
+    static TextSection text(String text) {
+        return new TextSection(text);
     }
 
     // Attributes
 
     /**
-     * Attr attribute node.
+     * Attribute.
      *
      * @param key   the key
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode attr(String key, String value) {
-        return new AttributeNode(key, value);
+    static AttributeSection attr(String key, String value) {
+        return new AttributeSection(key, value);
     }
 
     /**
-     * Accept attribute node.
+     * Onclick attribute.
+     *
+     * @param javaScriptSection The javascript section
+     * @return the attribute section
+     */
+    static AttributeSection onclick(JavaScriptSection javaScriptSection) {
+        return new AttributeSection("onclick", javaScriptSection.toString());
+    }
+
+    /**
+     * Accept attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode accept(String value) {
+    static AttributeSection accept(String value) {
         return attr("href", value);
     }
 
     /**
-     * Accept charset attribute node.
+     * Accept charset attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode accept_charset(String value) {
+    static AttributeSection accept_charset(String value) {
         return attr("accept-charset", value);
     }
 
     /**
-     * Accesskey attribute node.
+     * Accesskey attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode accesskey(String value) {
+    static AttributeSection accesskey(String value) {
         return attr("accesskey", value);
     }
 
     /**
-     * Action attribute node.
+     * Action attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode action(String value) {
+    static AttributeSection action(String value) {
         return attr("action", value);
     }
 
     /**
-     * Align attribute node.
+     * Align attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode align(String value) {
+    static AttributeSection align(String value) {
         return attr("align", value);
     }
 
     /**
-     * Allow attribute node.
+     * Allow attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode allow(String value) {
+    static AttributeSection allow(String value) {
         return attr("allow", value);
     }
 
     /**
-     * Alt attribute node.
+     * Alt attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode alt(String value) {
+    static AttributeSection alt(String value) {
         return attr("alt", value);
     }
 
     /**
-     * Async attribute node.
+     * Async attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode async(String value) {
+    static AttributeSection async(String value) {
         return attr("async", value);
     }
 
     /**
-     * Autocapitalize attribute node.
+     * Autocapitalize attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode autocapitalize(String value) {
+    static AttributeSection autocapitalize(String value) {
         return attr("autocapitalize", value);
     }
 
     /**
-     * Autocomplete attribute node.
+     * Autocomplete attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode autocomplete(String value) {
+    static AttributeSection autocomplete(String value) {
         return attr("autocomplete", value);
     }
 
     /**
-     * Autofocus attribute node.
+     * Autofocus attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode autofocus(String value) {
+    static AttributeSection autofocus(String value) {
         return attr("autofocus", value);
     }
 
     /**
-     * Autoplay attribute node.
+     * Autoplay attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode autoplay(String value) {
+    static AttributeSection autoplay(String value) {
         return attr("autoplay", value);
     }
 
     /**
-     * Background attribute node.
+     * Background attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode background(String value) {
+    static AttributeSection background(String value) {
         return attr("background", value);
     }
 
     /**
-     * Bgcolor attribute node.
+     * Bgcolor attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode bgcolor(String value) {
+    static AttributeSection bgcolor(String value) {
         return attr("bgcolor", value);
     }
 
     /**
-     * Border attribute node.
+     * Border attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode border(String value) {
+    static AttributeSection border(String value) {
         return attr("border", value);
     }
 
     /**
-     * Buffered attribute node.
+     * Buffered attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode buffered(String value) {
+    static AttributeSection buffered(String value) {
         return attr("buffered", value);
     }
 
     /**
-     * Capture attribute node.
+     * Capture attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode capture(String value) {
+    static AttributeSection capture(String value) {
         return attr("capture", value);
     }
 
     /**
-     * Challenge attribute node.
+     * Challenge attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode challenge(String value) {
+    static AttributeSection challenge(String value) {
         return attr("challenge", value);
     }
 
     /**
-     * Charset attribute node.
+     * Charset attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode charset(String value) {
+    static AttributeSection charset(String value) {
         return attr("charset", value);
     }
 
     /**
-     * Checked attribute node.
+     * Checked attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode checked(String value) {
+    static AttributeSection checked(String value) {
         return attr("checked", value);
     }
 
     /**
-     * Cite attribute node.
+     * Cite attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode cite(String value) {
+    static AttributeSection cite(String value) {
         return attr("cite", value);
     }
 
     /**
-     * Clazz attribute node.
+     * Clazz attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode clazz(String value) {
+    static AttributeSection clazz(String value) {
         return attr("class", value);
     }
 
     /**
-     * Classs attribute node.
+     * Classs attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode classs(String value) {
+    static AttributeSection classs(String value) {
         return attr("class", value);
     }
 
     /**
-     * Code attribute node.
+     * Code attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode code(String value) {
+    static AttributeSection code(String value) {
         return attr("code", value);
     }
 
     /**
-     * Codebase attribute node.
+     * Codebase attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode codebase(String value) {
+    static AttributeSection codebase(String value) {
         return attr("codebase", value);
     }
 
     /**
-     * Color attribute node.
+     * Color attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode color(String value) {
+    static AttributeSection color(String value) {
         return attr("color", value);
     }
 
     /**
-     * Cols attribute node.
+     * Cols attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode cols(String value) {
+    static AttributeSection cols(String value) {
         return attr("cols", value);
     }
 
     /**
-     * Colspan attribute node.
+     * Colspan attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode colspan(String value) {
+    static AttributeSection colspan(String value) {
         return attr("colspan", value);
     }
 
     /**
-     * Content attribute node.
+     * Content attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode content(String value) {
+    static AttributeSection content(String value) {
         return attr("content", value);
     }
 
     /**
-     * Contenteditable attribute node.
+     * Contenteditable attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode contenteditable(String value) {
+    static AttributeSection contenteditable(String value) {
         return attr("contenteditable", value);
     }
 
     /**
-     * Contextmenu attribute node.
+     * Contextmenu attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode contextmenu(String value) {
+    static AttributeSection contextmenu(String value) {
         return attr("contextmenu", value);
     }
 
     /**
-     * Controls attribute node.
+     * Controls attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode controls(String value) {
+    static AttributeSection controls(String value) {
         return attr("controls", value);
     }
 
     /**
-     * Coords attribute node.
+     * Coords attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode coords(String value) {
+    static AttributeSection coords(String value) {
         return attr("coords", value);
     }
 
     /**
-     * Crossorigin attribute node.
+     * Crossorigin attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode crossorigin(String value) {
+    static AttributeSection crossorigin(String value) {
         return attr("crossorigin", value);
     }
 
     /**
-     * Csp attribute node.
+     * Csp attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode csp(String value) {
+    static AttributeSection csp(String value) {
         return attr("csp", value);
     }
 
     /**
-     * Data attribute node.
+     * Data attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode data(String value) {
+    static AttributeSection data(String value) {
         return attr("data", value);
     }
 
     /**
-     * Data attribute node.
+     * Data attribute section.
      *
      * @param key   the key
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode data_(String key, String value) {
+    static AttributeSection data_(String key, String value) {
         return attr("data-" + key, value);
     }
 
     /**
-     * Datetime attribute node.
+     * Datetime attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode datetime(String value) {
+    static AttributeSection datetime(String value) {
         return attr("datetime", value);
     }
 
     /**
-     * Decoding attribute node.
+     * Decoding attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode decoding(String value) {
+    static AttributeSection decoding(String value) {
         return attr("decoding", value);
     }
 
     /**
-     * Dfault attribute node.
+     * Dfault attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode dfault(String value) {
+    static AttributeSection dfault(String value) {
         return attr("default", value);
     }
 
     /**
-     * Defaultt attribute node.
+     * Defaultt attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode defaultt(String value) {
+    static AttributeSection defaultt(String value) {
         return attr("default", value);
     }
 
     /**
-     * Defer attribute node.
+     * Defer attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode defer(String value) {
+    static AttributeSection defer(String value) {
         return attr("defer", value);
     }
 
     /**
-     * Dir attribute node.
+     * Dir attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode dir(String value) {
+    static AttributeSection dir(String value) {
         return attr("dir", value);
     }
 
     /**
-     * Dirname attribute node.
+     * Dirname attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode dirname(String value) {
+    static AttributeSection dirname(String value) {
         return attr("dirname", value);
     }
 
     /**
-     * Disabled attribute node.
+     * Disabled attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode disabled(String value) {
+    static AttributeSection disabled(String value) {
         return attr("disabled", value);
     }
 
     /**
-     * Download attribute node.
+     * Download attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode download(String value) {
+    static AttributeSection download(String value) {
         return attr("download", value);
     }
 
     /**
-     * Draggable attribute node.
+     * Draggable attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode draggable(String value) {
+    static AttributeSection draggable(String value) {
         return attr("draggable", value);
     }
 
     /**
-     * Enctype attribute node.
+     * Enctype attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode enctype(String value) {
+    static AttributeSection enctype(String value) {
         return attr("enctype", value);
     }
 
     /**
-     * Enterkeyhint attribute node.
+     * Enterkeyhint attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode enterkeyhint(String value) {
+    static AttributeSection enterkeyhint(String value) {
         return attr("enterkeyhint", value);
     }
 
     /**
-     * Forr attribute node.
+     * Forr attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode forr(String value) {
+    static AttributeSection forr(String value) {
         return attr("for", value);
     }
 
     /**
-     * Form attribute node.
+     * Form attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode form(String value) {
+    static AttributeSection form(String value) {
         return attr("form", value);
     }
 
     /**
-     * Formaction attribute node.
+     * Formaction attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode formaction(String value) {
+    static AttributeSection formaction(String value) {
         return attr("formaction", value);
     }
 
     /**
-     * Formenctype attribute node.
+     * Formenctype attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode formenctype(String value) {
+    static AttributeSection formenctype(String value) {
         return attr("formenctype", value);
     }
 
     /**
-     * Formmethod attribute node.
+     * Formmethod attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode formmethod(String value) {
+    static AttributeSection formmethod(String value) {
         return attr("formmethod", value);
     }
 
     /**
-     * Formnovalidate attribute node.
+     * Formnovalidate attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode formnovalidate(String value) {
+    static AttributeSection formnovalidate(String value) {
         return attr("formnovalidate", value);
     }
 
     /**
-     * Formtarget attribute node.
+     * Formtarget attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode formtarget(String value) {
+    static AttributeSection formtarget(String value) {
         return attr("formtarget", value);
     }
 
     /**
-     * Headers attribute node.
+     * Headers attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode headers(String value) {
+    static AttributeSection headers(String value) {
         return attr("headers", value);
     }
 
     /**
-     * Height attribute node.
+     * Height attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode height(String value) {
+    static AttributeSection height(String value) {
         return attr("height", value);
     }
 
     /**
-     * Hidden attribute node.
+     * Hidden attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode hidden(String value) {
+    static AttributeSection hidden(String value) {
         return attr("hidden", value);
     }
 
     /**
-     * High attribute node.
+     * High attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode high(String value) {
+    static AttributeSection high(String value) {
         return attr("high", value);
     }
 
     /**
-     * Href attribute node.
+     * Href attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode href(String value) {
+    static AttributeSection href(String value) {
         return attr("href", value);
     }
 
     /**
-     * Hreflang attribute node.
+     * Hreflang attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode hreflang(String value) {
+    static AttributeSection hreflang(String value) {
         return attr("hreflang", value);
     }
 
     /**
-     * Http equiv attribute node.
+     * Http equiv attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode http_equiv(String value) {
+    static AttributeSection http_equiv(String value) {
         return attr("http-equiv", value);
     }
 
     /**
-     * Icon attribute node.
+     * Icon attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode icon(String value) {
+    static AttributeSection icon(String value) {
         return attr("icon", value);
     }
 
     /**
-     * Id attribute node.
+     * Id attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode id(String value) {
+    static AttributeSection id(String value) {
         return attr("id", value);
     }
 
     /**
-     * Importance attribute node.
+     * Importance attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode importance(String value) {
+    static AttributeSection importance(String value) {
         return attr("importance", value);
     }
 
     /**
-     * Integrity attribute node.
+     * Integrity attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode integrity(String value) {
+    static AttributeSection integrity(String value) {
         return attr("integrity", value);
     }
 
     /**
-     * Intrinsicsize attribute node.
+     * Intrinsicsize attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode intrinsicsize(String value) {
+    static AttributeSection intrinsicsize(String value) {
         return attr("intrinsicsize", value);
     }
 
     /**
-     * Inputmode attribute node.
+     * Inputmode attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode inputmode(String value) {
+    static AttributeSection inputmode(String value) {
         return attr("inputmode", value);
     }
 
     /**
-     * Ismap attribute node.
+     * Ismap attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode ismap(String value) {
+    static AttributeSection ismap(String value) {
         return attr("ismap", value);
     }
 
     /**
-     * Itemprop attribute node.
+     * Itemprop attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode itemprop(String value) {
+    static AttributeSection itemprop(String value) {
         return attr("itemprop", value);
     }
 
     /**
-     * Keytype attribute node.
+     * Keytype attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode keytype(String value) {
+    static AttributeSection keytype(String value) {
         return attr("keytype", value);
     }
 
     /**
-     * Kind attribute node.
+     * Kind attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode kind(String value) {
+    static AttributeSection kind(String value) {
         return attr("kind", value);
     }
 
     /**
-     * Label attribute node.
+     * Label attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode label(String value) {
+    static AttributeSection label(String value) {
         return attr("label", value);
     }
 
     /**
-     * Lang attribute node.
+     * Lang attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode lang(String value) {
+    static AttributeSection lang(String value) {
         return attr("lang", value);
     }
 
     /**
-     * Language attribute node.
+     * Language attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode language(String value) {
+    static AttributeSection language(String value) {
         return attr("language", value);
     }
 
     /**
-     * Loading attribute node.
+     * Loading attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode loading(String value) {
+    static AttributeSection loading(String value) {
         return attr("loading", value);
     }
 
     /**
-     * List attribute node.
+     * List attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode list(String value) {
+    static AttributeSection list(String value) {
         return attr("list", value);
     }
 
     /**
-     * Loop attribute node.
+     * Loop attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode loop(String value) {
+    static AttributeSection loop(String value) {
         return attr("loop", value);
     }
 
     /**
-     * Low attribute node.
+     * Low attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode low(String value) {
+    static AttributeSection low(String value) {
         return attr("low", value);
     }
 
     /**
-     * Manifest attribute node.
+     * Manifest attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode manifest(String value) {
+    static AttributeSection manifest(String value) {
         return attr("manifest", value);
     }
 
     /**
-     * Max attribute node.
+     * Max attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode max(String value) {
+    static AttributeSection max(String value) {
         return attr("max", value);
     }
 
     /**
-     * Maxlength attribute node.
+     * Maxlength attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode maxlength(String value) {
+    static AttributeSection maxlength(String value) {
         return attr("maxlength", value);
     }
 
     /**
-     * Minlength attribute node.
+     * Minlength attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode minlength(String value) {
+    static AttributeSection minlength(String value) {
         return attr("minlength", value);
     }
 
     /**
-     * Media attribute node.
+     * Media attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode media(String value) {
+    static AttributeSection media(String value) {
         return attr("media", value);
     }
 
     /**
-     * Method attribute node.
+     * Method attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode method(String value) {
+    static AttributeSection method(String value) {
         return attr("method", value);
     }
 
     /**
-     * Min attribute node.
+     * Min attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode min(String value) {
+    static AttributeSection min(String value) {
         return attr("min", value);
     }
 
     /**
-     * Multiple attribute node.
+     * Multiple attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode multiple(String value) {
+    static AttributeSection multiple(String value) {
         return attr("multiple", value);
     }
 
     /**
-     * Muted attribute node.
+     * Muted attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode muted(String value) {
+    static AttributeSection muted(String value) {
         return attr("muted", value);
     }
 
     /**
-     * Name attribute node.
+     * Name attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode name(String value) {
+    static AttributeSection name(String value) {
         return attr("name", value);
     }
 
     /**
-     * Novalidate attribute node.
+     * Novalidate attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode novalidate(String value) {
+    static AttributeSection novalidate(String value) {
         return attr("novalidate", value);
     }
 
     /**
-     * Open attribute node.
+     * Open attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode open(String value) {
+    static AttributeSection open(String value) {
         return attr("open", value);
     }
 
     /**
-     * Optimum attribute node.
+     * Optimum attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode optimum(String value) {
+    static AttributeSection optimum(String value) {
         return attr("optimum", value);
     }
 
     /**
-     * Pattern attribute node.
+     * Pattern attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode pattern(String value) {
+    static AttributeSection pattern(String value) {
         return attr("pattern", value);
     }
 
     /**
-     * Ping attribute node.
+     * Ping attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode ping(String value) {
+    static AttributeSection ping(String value) {
         return attr("ping", value);
     }
 
     /**
-     * Placeholder attribute node.
+     * Placeholder attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode placeholder(String value) {
+    static AttributeSection placeholder(String value) {
         return attr("placeholder", value);
     }
 
     /**
-     * Poster attribute node.
+     * Poster attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode poster(String value) {
+    static AttributeSection poster(String value) {
         return attr("poster", value);
     }
 
     /**
-     * Preload attribute node.
+     * Preload attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode preload(String value) {
+    static AttributeSection preload(String value) {
         return attr("preload", value);
     }
 
     /**
-     * Radiogroup attribute node.
+     * Radiogroup attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode radiogroup(String value) {
+    static AttributeSection radiogroup(String value) {
         return attr("radiogroup", value);
     }
 
     /**
-     * Readonly attribute node.
+     * Readonly attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode readonly(String value) {
+    static AttributeSection readonly(String value) {
         return attr("readonly", value);
     }
 
     /**
-     * Referrerpolicy attribute node.
+     * Referrerpolicy attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode referrerpolicy(String value) {
+    static AttributeSection referrerpolicy(String value) {
         return attr("referrerpolicy", value);
     }
 
     /**
-     * Rel attribute node.
+     * Rel attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode rel(String value) {
+    static AttributeSection rel(String value) {
         return attr("rel", value);
     }
 
     /**
-     * Required attribute node.
+     * Required attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode required(String value) {
+    static AttributeSection required(String value) {
         return attr("required", value);
     }
 
     /**
-     * Reversed attribute node.
+     * Reversed attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode reversed(String value) {
+    static AttributeSection reversed(String value) {
         return attr("reversed", value);
     }
 
     /**
-     * Rows attribute node.
+     * Rows attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode rows(String value) {
+    static AttributeSection rows(String value) {
         return attr("rows", value);
     }
 
     /**
-     * Rowspan attribute node.
+     * Rowspan attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode rowspan(String value) {
+    static AttributeSection rowspan(String value) {
         return attr("rowspan", value);
     }
 
     /**
-     * Sandbox attribute node.
+     * Sandbox attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode sandbox(String value) {
+    static AttributeSection sandbox(String value) {
         return attr("sandbox", value);
     }
 
     /**
-     * Scope attribute node.
+     * Scope attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode scope(String value) {
+    static AttributeSection scope(String value) {
         return attr("scope", value);
     }
 
     /**
-     * Scoped attribute node.
+     * Scoped attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode scoped(String value) {
+    static AttributeSection scoped(String value) {
         return attr("scoped", value);
     }
 
     /**
-     * Selected attribute node.
+     * Selected attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode selected(String value) {
+    static AttributeSection selected(String value) {
         return attr("selected", value);
     }
 
     /**
-     * Shape attribute node.
+     * Shape attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode shape(String value) {
+    static AttributeSection shape(String value) {
         return attr("shape", value);
     }
 
     /**
-     * Size attribute node.
+     * Size attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode size(String value) {
+    static AttributeSection size(String value) {
         return attr("size", value);
     }
 
     /**
-     * Sizes attribute node.
+     * Sizes attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode sizes(String value) {
+    static AttributeSection sizes(String value) {
         return attr("sizes", value);
     }
 
     /**
-     * Slot attribute node.
+     * Slot attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode slot(String value) {
+    static AttributeSection slot(String value) {
         return attr("slot", value);
     }
 
     /**
-     * Span attribute node.
+     * Span attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode span(String value) {
+    static AttributeSection span(String value) {
         return attr("span", value);
     }
 
     /**
-     * Spellcheck attribute node.
+     * Spellcheck attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode spellcheck(String value) {
+    static AttributeSection spellcheck(String value) {
         return attr("spellcheck", value);
     }
 
     /**
-     * Src attribute node.
+     * Src attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode src(String value) {
+    static AttributeSection src(String value) {
         return attr("src", value);
     }
 
     /**
-     * Srcdoc attribute node.
+     * Srcdoc attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode srcdoc(String value) {
+    static AttributeSection srcdoc(String value) {
         return attr("srcdoc", value);
     }
 
     /**
-     * Srclang attribute node.
+     * Srclang attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode srclang(String value) {
+    static AttributeSection srclang(String value) {
         return attr("srclang", value);
     }
 
     /**
-     * Srcset attribute node.
+     * Srcset attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode srcset(String value) {
+    static AttributeSection srcset(String value) {
         return attr("srcset", value);
     }
 
     /**
-     * Start attribute node.
+     * Start attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode start(String value) {
+    static AttributeSection start(String value) {
         return attr("start", value);
     }
 
     /**
-     * Step attribute node.
+     * Step attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode step(String value) {
+    static AttributeSection step(String value) {
         return attr("step", value);
     }
 
     /**
-     * Style attribute node.
+     * Style attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode style(String value) {
+    static AttributeSection style(String value) {
         return attr("style", value);
     }
 
     /**
-     * Summary attribute node.
+     * Summary attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode summary(String value) {
+    static AttributeSection summary(String value) {
         return attr("summary", value);
     }
 
     /**
-     * Tabindex attribute node.
+     * Tabindex attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode tabindex(String value) {
+    static AttributeSection tabindex(String value) {
         return attr("tabindex", value);
     }
 
     /**
-     * Target attribute node.
+     * Target attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode target(String value) {
+    static AttributeSection target(String value) {
         return attr("target", value);
     }
 
     /**
-     * Title attribute node.
+     * Title attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode title(String value) {
+    static AttributeSection title(String value) {
         return attr("title", value);
     }
 
     /**
-     * Translate attribute node.
+     * Translate attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode translate(String value) {
+    static AttributeSection translate(String value) {
         return attr("translate", value);
     }
 
     /**
-     * Type attribute node.
+     * Type attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode type(String value) {
+    static AttributeSection type(String value) {
         return attr("type", value);
     }
 
     /**
-     * Usemap attribute node.
+     * Usemap attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode usemap(String value) {
+    static AttributeSection usemap(String value) {
         return attr("usemap", value);
     }
 
     /**
-     * Value attribute node.
+     * Value attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode value(String value) {
+    static AttributeSection value(String value) {
         return attr("value", value);
     }
 
     /**
-     * Width attribute node.
+     * Width attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode width(String value) {
+    static AttributeSection width(String value) {
         return attr("width", value);
     }
 
     /**
-     * Wrap attribute node.
+     * Wrap attribute section.
      *
      * @param value the value
-     * @return the attribute node
+     * @return the attribute section
      */
-    static AttributeNode wrap(String value) {
+    static AttributeSection wrap(String value) {
         return attr("wrap", value);
     }
 
     // Tags
 
     /**
-     * Tag node.
+     * Tag element.
      *
      * @param name     the name
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node tag(String name, Node... children) {
-        return new Node(name, children);
+    static ElementSection tag(String name, Section... children) {
+        return new ElementSection(name, children);
     }
 
     // Main root
 
     /**
-     * Html node.
+     * Html element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node html(Node... children) {
-        return new HtmlNode(children);
+    static ElementSection html(Section... children) {
+        return new HtmlElementSection(children);
     }
 
     // Document metadata
 
     /**
-     * Base node.
+     * Base element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node base(Node... children) {
+    static ElementSection base(Section... children) {
         return tag("base", children);
     }
 
     /**
-     * Head node.
+     * Head element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node head(Node... children) {
+    static ElementSection head(Section... children) {
         return tag("head", children);
     }
 
     /**
-     * Link node.
+     * Link element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node link(Node... children) {
+    static ElementSection link(Section... children) {
         return tag("link", children);
     }
 
     /**
-     * Meta node.
+     * Meta element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node meta(Node... children) {
+    static ElementSection meta(Section... children) {
         return tag("meta", children);
     }
 
     /**
-     * Style node.
+     * Style element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node style(Node... children) {
+    static ElementSection style(Section... children) {
         return tag("style", children);
     }
 
     /**
-     * Title node.
+     * Title element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node title(Node... children) {
+    static ElementSection title(Section... children) {
         return tag("title", children);
     }
 
     // Sectioning root
 
     /**
-     * Body node.
+     * Body element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node body(Node... children) {
+    static ElementSection body(Section... children) {
         return tag("body", children);
     }
 
@@ -1509,1081 +1480,1081 @@ public interface Html {
 
 
     /**
-     * Address node.
+     * Address element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node address(Node... children) {
+    static ElementSection address(Section... children) {
         return tag("address", children);
     }
 
     /**
-     * Article node.
+     * Article element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node article(Node... children) {
+    static ElementSection article(Section... children) {
         return tag("article", children);
     }
 
     /**
-     * Aside node.
+     * Aside element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node aside(Node... children) {
+    static ElementSection aside(Section... children) {
         return tag("aside", children);
     }
 
     /**
-     * Footer node.
+     * Footer element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node footer(Node... children) {
+    static ElementSection footer(Section... children) {
         return tag("footer", children);
     }
 
     /**
-     * Header node.
+     * Header element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node header(Node... children) {
+    static ElementSection header(Section... children) {
         return tag("header", children);
     }
 
     /**
-     * H 1 node.
+     * H 1 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h1(Node... children) {
+    static ElementSection h1(Section... children) {
         return tag("h1", children);
     }
     /**
-     * H 2 node.
+     * H 2 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h2(Node... children) {
+    static ElementSection h2(Section... children) {
         return tag("h2", children);
     }
 
     /**
-     * H 3 node.
+     * H 3 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h3(Node... children) {
+    static ElementSection h3(Section... children) {
         return tag("h3", children);
     }
 
     /**
-     * H 4 node.
+     * H 4 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h4(Node... children) {
+    static ElementSection h4(Section... children) {
         return tag("h4", children);
     }
 
     /**
-     * H 5 node.
+     * H 5 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h5(Node... children) {
+    static ElementSection h5(Section... children) {
         return tag("h5", children);
     }
 
     /**
-     * H 6 node.
+     * H 6 element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node h6(Node... children) {
+    static ElementSection h6(Section... children) {
         return tag("h6", children);
     }
 
     /**
-     * Main node.
+     * Main element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node main(Node... children) {
+    static ElementSection main(Section... children) {
         return tag("main", children);
     }
 
     /**
-     * Nav node.
+     * Nav element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node nav(Node... children) {
+    static ElementSection nav(Section... children) {
         return tag("nav", children);
     }
 
     /**
-     * Section node.
+     * Section element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node section(Node... children) {
+    static ElementSection section(Section... children) {
         return tag("section", children);
     }
 
     // Text content
 
     /**
-     * Blockquote node.
+     * Blockquote element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node blockquote(Node... children) {
+    static ElementSection blockquote(Section... children) {
         return tag("blockquote", children);
     }
 
     /**
-     * Dd node.
+     * Dd element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node dd(Node... children) {
+    static ElementSection dd(Section... children) {
         return tag("dd", children);
     }
 
     /**
-     * Div node.
+     * Div element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node div(Node... children) {
+    static ElementSection div(Section... children) {
         return tag("div", children);
     }
 
     /**
-     * Dl node.
+     * Dl element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node dl(Node... children) {
+    static ElementSection dl(Section... children) {
         return tag("dl", children);
     }
 
     /**
-     * Dt node.
+     * Dt element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node dt(Node... children) {
+    static ElementSection dt(Section... children) {
         return tag("dt", children);
     }
 
     /**
-     * Figcaption node.
+     * Figcaption element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node figcaption(Node... children) {
+    static ElementSection figcaption(Section... children) {
         return tag("figcaption", children);
     }
 
     /**
-     * Figure node.
+     * Figure element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node figure(Node... children) {
+    static ElementSection figure(Section... children) {
         return tag("figure", children);
     }
 
     /**
-     * Hr node.
+     * Hr element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node hr(Node... children) {
+    static ElementSection hr(Section... children) {
         return tag("hr", children);
     }
 
     /**
-     * Li node.
+     * Li element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node li(Node... children) {
+    static ElementSection li(Section... children) {
         return tag("li", children);
     }
 
     /**
-     * Ol node.
+     * Ol element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node ol(Node... children) {
+    static ElementSection ol(Section... children) {
         return tag("ol", children);
     }
 
     /**
-     * P node.
+     * P element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node p(Node... children) {
+    static ElementSection p(Section... children) {
         return tag("p", children);
     }
 
     /**
-     * Pre node.
+     * Pre element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node pre(Node... children) {
+    static ElementSection pre(Section... children) {
         return tag("pre", children);
     }
 
     /**
-     * Ul node.
+     * Ul element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node ul(Node... children) {
+    static ElementSection ul(Section... children) {
         return tag("ul", children);
     }
 
     // Inline text semantics
 
     /**
-     * A node.
+     * A element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node a(Node... children) {
+    static ElementSection a(Section... children) {
         return tag("a", children);
     }
 
     /**
-     * Abbr node.
+     * Abbr element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node abbr(Node... children) {
+    static ElementSection abbr(Section... children) {
         return tag("abbr", children);
     }
 
     /**
-     * B node.
+     * B element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node b(Node... children) {
+    static ElementSection b(Section... children) {
         return tag("b", children);
     }
 
     /**
-     * Bdi node.
+     * Bdi element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node bdi(Node... children) {
+    static ElementSection bdi(Section... children) {
         return tag("bdi", children);
     }
 
     /**
-     * Bdo node.
+     * Bdo element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node bdo(Node... children) {
+    static ElementSection bdo(Section... children) {
         return tag("bdo", children);
     }
 
     /**
-     * Br node.
+     * Br element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node br(Node... children) {
+    static ElementSection br(Section... children) {
         return tag("br", children);
     }
 
     /**
-     * Cite node.
+     * Cite element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node cite(Node... children) {
+    static ElementSection cite(Section... children) {
         return tag("cite", children);
     }
 
     /**
-     * Code node.
+     * Code element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node code(Node... children) {
+    static ElementSection code(Section... children) {
         return tag("code", children);
     }
 
     /**
-     * Data node.
+     * Data element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node data(Node... children) {
+    static ElementSection data(Section... children) {
         return tag("data", children);
     }
 
     /**
-     * Dfn node.
+     * Dfn element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node dfn(Node... children) {
+    static ElementSection dfn(Section... children) {
         return tag("dfn", children);
     }
 
     /**
-     * Em node.
+     * Em element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node em(Node... children) {
+    static ElementSection em(Section... children) {
         return tag("em", children);
     }
 
     /**
-     * node.
+     * element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node i(Node... children) {
+    static ElementSection i(Section... children) {
         return tag("i", children);
     }
 
     /**
-     * Kbd node.
+     * Kbd element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node kbd(Node... children) {
+    static ElementSection kbd(Section... children) {
         return tag("kbd", children);
     }
 
     /**
-     * Mark node.
+     * Mark element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node mark(Node... children) {
+    static ElementSection mark(Section... children) {
         return tag("mark", children);
     }
 
     /**
-     * Q node.
+     * Q element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node q(Node... children) {
+    static ElementSection q(Section... children) {
         return tag("q", children);
     }
 
     /**
-     * Rp node.
+     * Rp element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node rp(Node... children) {
+    static ElementSection rp(Section... children) {
         return tag("rp", children);
     }
 
     /**
-     * Rt node.
+     * Rt element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node rt(Node... children) {
+    static ElementSection rt(Section... children) {
         return tag("rt", children);
     }
 
     /**
-     * Ruby node.
+     * Ruby element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node ruby(Node... children) {
+    static ElementSection ruby(Section... children) {
         return tag("ruby", children);
     }
 
     /**
-     * S node.
+     * S element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node s(Node... children) {
+    static ElementSection s(Section... children) {
         return tag("s", children);
     }
 
     /**
-     * Samp node.
+     * Samp element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node samp(Node... children) {
+    static ElementSection samp(Section... children) {
         return tag("samp", children);
     }
 
     /**
-     * Small node.
+     * Small element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node small(Node... children) {
+    static ElementSection small(Section... children) {
         return tag("small", children);
     }
 
     /**
-     * Span node.
+     * Span element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node span(Node... children) {
+    static ElementSection span(Section... children) {
         return tag("span", children);
     }
 
     /**
-     * Strong node.
+     * Strong element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node strong(Node... children) {
+    static ElementSection strong(Section... children) {
         return tag("strong", children);
     }
 
     /**
-     * Sub node.
+     * Sub element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node sub(Node... children) {
+    static ElementSection sub(Section... children) {
         return tag("sub", children);
     }
 
     /**
-     * Sup node.
+     * Sup element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node sup(Node... children) {
+    static ElementSection sup(Section... children) {
         return tag("sup", children);
     }
 
     /**
-     * Time node.
+     * Time element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node time(Node... children) {
+    static ElementSection time(Section... children) {
         return tag("time", children);
     }
 
     /**
-     * U node.
+     * U element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node u(Node... children) {
+    static ElementSection u(Section... children) {
         return tag("u", children);
     }
 
     /**
-     * Var node.
+     * Var element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node var(Node... children) {
+    static ElementSection var(Section... children) {
         return tag("var", children);
     }
 
     /**
-     * Wbr node.
+     * Wbr element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node wbr(Node... children) {
+    static ElementSection wbr(Section... children) {
         return tag("wbr", children);
     }
 
     // Image and multimedia
 
     /**
-     * Area node.
+     * Area element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node area(Node... children) {
+    static ElementSection area(Section... children) {
         return tag("area", children);
     }
 
     /**
-     * Audio node.
+     * Audio element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node audio(Node... children) {
+    static ElementSection audio(Section... children) {
         return tag("audio", children);
     }
 
     /**
-     * Img node.
+     * Img element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node img(Node... children) {
+    static ElementSection img(Section... children) {
         return tag("img", children);
     }
 
     /**
-     * Map node.
+     * Map element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node map(Node... children) {
+    static ElementSection map(Section... children) {
         return tag("map", children);
     }
 
     /**
-     * Track node.
+     * Track element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node track(Node... children) {
+    static ElementSection track(Section... children) {
         return tag("track", children);
     }
 
     /**
-     * Video node.
+     * Video element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node video(Node... children) {
+    static ElementSection video(Section... children) {
         return tag("video", children);
     }
 
     // Embedded content
 
     /**
-     * Embed node.
+     * Embed element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node embed(Node... children) {
+    static ElementSection embed(Section... children) {
         return tag("embed", children);
     }
 
     /**
-     * Iframe node.
+     * Iframe element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node iframe(Node... children) {
+    static ElementSection iframe(Section... children) {
         return tag("iframe", children);
     }
 
     /**
-     * Object node.
+     * Object element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node object(Node... children) {
+    static ElementSection object(Section... children) {
         return tag("objcet", children);
     }
 
     /**
-     * Param node.
+     * Param element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node param(Node... children) {
+    static ElementSection param(Section... children) {
         return tag("param", children);
     }
 
     /**
-     * Picture node.
+     * Picture element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node picture(Node... children) {
+    static ElementSection picture(Section... children) {
         return tag("picture", children);
     }
 
     /**
-     * Portal node.
+     * Portal element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node portal(Node... children) {
+    static ElementSection portal(Section... children) {
         return tag("portal", children);
     }
 
     /**
-     * Source node.
+     * Source element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node source(Node... children) {
+    static ElementSection source(Section... children) {
         return tag("source", children);
     }
 
     // SVG and MathML
 
     /**
-     * Svg node.
+     * Svg element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node svg(Node... children) {
+    static ElementSection svg(Section... children) {
         return tag("svg", children);
     }
 
     /**
-     * Math node.
+     * Math element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node math(Node... children) {
+    static ElementSection math(Section... children) {
         return tag("math", children);
     }
 
     // Scripting
 
     /**
-     * Canvas node.
+     * Canvas element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node canvas(Node... children) {
+    static ElementSection canvas(Section... children) {
         return tag("canvas", children);
     }
 
     /**
-     * Noscript node.
+     * Noscript element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node noscript(Node... children) {
+    static ElementSection noscript(Section... children) {
         return tag("noscript", children);
     }
 
     /**
-     * Script node.
+     * Script element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node script(Node... children) {
+    static ElementSection script(Section... children) {
         return tag("script", children);
     }
 
     // Demarcating edits
 
     /**
-     * Del node.
+     * Del element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node del(Node... children) {
+    static ElementSection del(Section... children) {
         return tag("del", children);
     }
 
     /**
-     * Ins node.
+     * Ins element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node ins(Node... children) {
+    static ElementSection ins(Section... children) {
         return tag("ins", children);
     }
 
     // Table content
 
     /**
-     * Caption node.
+     * Caption element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node caption(Node... children) {
+    static ElementSection caption(Section... children) {
         return tag("caption", children);
     }
 
     /**
-     * Col node.
+     * Col element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node col(Node... children) {
+    static ElementSection col(Section... children) {
         return tag("col", children);
     }
 
     /**
-     * Colgroup node.
+     * Colgroup element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node colgroup(Node... children) {
+    static ElementSection colgroup(Section... children) {
         return tag("colgroup", children);
     }
 
     /**
-     * Table node.
+     * Table element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node table(Node... children) {
+    static ElementSection table(Section... children) {
         return tag("table", children);
     }
 
     /**
-     * Tbody node.
+     * Tbody element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node tbody(Node... children) {
+    static ElementSection tbody(Section... children) {
         return tag("tbody", children);
     }
 
     /**
-     * Td node.
+     * Td element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node td(Node... children) {
+    static ElementSection td(Section... children) {
         return tag("td", children);
     }
 
     /**
-     * Tfoot node.
+     * Tfoot element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node tfoot(Node... children) {
+    static ElementSection tfoot(Section... children) {
         return tag("tfoot", children);
     }
 
     /**
-     * Th node.
+     * Th element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node th(Node... children) {
+    static ElementSection th(Section... children) {
         return tag("th", children);
     }
 
     /**
-     * Thead node.
+     * Thead element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node thead(Node... children) {
+    static ElementSection thead(Section... children) {
         return tag("thead", children);
     }
 
     /**
-     * Tr node.
+     * Tr element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node tr(Node... children) {
+    static ElementSection tr(Section... children) {
         return tag("tr", children);
     }
 
     // Forms
 
     /**
-     * Button node.
+     * Button element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node button(Node... children) {
+    static ElementSection button(Section... children) {
         return tag("button", children);
     }
 
     /**
-     * Datalist node.
+     * Datalist element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node datalist(Node... children) {
+    static ElementSection datalist(Section... children) {
         return tag("datalist", children);
     }
 
     /**
-     * Fieldset node.
+     * Fieldset element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node fieldset(Node... children) {
+    static ElementSection fieldset(Section... children) {
         return tag("fieldset", children);
     }
 
     /**
-     * Form node.
+     * Form element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node form(Node... children) {
+    static ElementSection form(Section... children) {
         return tag("form", children);
     }
 
     /**
-     * Input node.
+     * Input element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node input(Node... children) {
+    static ElementSection input(Section... children) {
         return tag("input", children);
     }
 
     /**
-     * Label node.
+     * Label element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node label(Node... children) {
+    static ElementSection label(Section... children) {
         return tag("label", children);
     }
 
     /**
-     * Legend node.
+     * Legend element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node legend(Node... children) {
+    static ElementSection legend(Section... children) {
         return tag("legend", children);
     }
 
     /**
-     * Meter node.
+     * Meter element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node meter(Node... children) {
+    static ElementSection meter(Section... children) {
         return tag("meter", children);
     }
 
     /**
-     * Optgroup node.
+     * Optgroup element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node optgroup(Node... children) {
+    static ElementSection optgroup(Section... children) {
         return tag("optgroup", children);
     }
 
     /**
-     * Option node.
+     * Option element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node option(Node... children) {
+    static ElementSection option(Section... children) {
         return tag("option", children);
     }
 
     /**
-     * Output node.
+     * Output element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node output(Node... children) {
+    static ElementSection output(Section... children) {
         return tag("output", children);
     }
 
     /**
-     * Progress node.
+     * Progress element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node progress(Node... children) {
+    static ElementSection progress(Section... children) {
         return tag("progress", children);
     }
 
     /**
-     * Select node.
+     * Select element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node select(Node... children) {
+    static ElementSection select(Section... children) {
         return tag("select", children);
     }
 
     /**
-     * Textarea node.
+     * Textarea element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node textarea(Node... children) {
+    static ElementSection textarea(Section... children) {
         return tag("textarea", children);
     }
 
     // Interactive elements
 
     /**
-     * Details node.
+     * Details element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node details(Node... children) {
+    static ElementSection details(Section... children) {
         return tag("details", children);
     }
 
     /**
-     * Dialog node.
+     * Dialog element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node dialog(Node... children) {
+    static ElementSection dialog(Section... children) {
         return tag("dialog", children);
     }
 
     /**
-     * Menu node.
+     * Menu element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node menu(Node... children) {
+    static ElementSection menu(Section... children) {
         return tag("menu", children);
     }
 
     /**
-     * Summary node.
+     * Summary element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node summary(Node... children) {
+    static ElementSection summary(Section... children) {
         return tag("summary", children);
     }
 
     /**
-     * Slot node.
+     * Slot element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node slot(Node... children) {
+    static ElementSection slot(Section... children) {
         return tag("slot", children);
     }
 
     /**
-     * Template node.
+     * Template element.
      *
      * @param children the children
-     * @return the node
+     * @return the element
      */
-    static Node template(Node... children) {
+    static ElementSection template(Section... children) {
         return tag("template", children);
     }
 }

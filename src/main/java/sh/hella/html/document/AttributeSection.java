@@ -1,20 +1,19 @@
-package sh.hella.html.node;
+package sh.hella.html.document;
 
 /**
- * The type Attribute node.
+ * The type AttributeSection.
  */
-public class AttributeNode extends Node {
+public class AttributeSection extends Section {
     private final String name;
     private final String value;
 
     /**
-     * Instantiates a new Attribute node.
+     * Instantiates a new AttributeSection.
      *
      * @param name  the name
      * @param value the value
      */
-    public AttributeNode(String name, String value) {
-        super("attribute");
+    public AttributeSection(String name, String value) {
         this.name = name;
         this.value = value;
     }
