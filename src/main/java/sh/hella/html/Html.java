@@ -1548,6 +1548,7 @@ public interface Html {
     static ElementSection h1(Section... children) {
         return tag("h1", children);
     }
+
     /**
      * H 2 element.
      *
