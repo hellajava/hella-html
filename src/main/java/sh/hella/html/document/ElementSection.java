@@ -5,7 +5,7 @@ package sh.hella.html.document;
  */
 @SuppressWarnings("unused")
 public class ElementSection extends Section {
-    private transient final String name;
+    private final transient String name;
 
     /**
      * Instantiates a new ElementSection.

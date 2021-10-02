@@ -11,21 +11,43 @@ import sh.hella.html.document.Model;
 
 import java.io.IOException;
 
+/**
+ * The type Web socket handler.
+ */
 @WebSocket
 public class WebSocketHandler {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketHandler.class.getName());
 
+    /**
+     * On connect.
+     *
+     * @param session the session
+     */
     @OnWebSocketConnect
     public void onConnect(Session session) {
         logger.debug("WebSocket session connected from {}", session.getRemoteAddress());
     }
 
+    /**
+     * On close.
+     *
+     * @param session    the session
+     * @param statusCode the status code
+     * @param reason     the reason
+     */
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
         logger.debug("WebSocket session closed from {}, statusCode={}, reason={}",
                 session.getRemoteAddress(), statusCode, reason);
     }
 
+    /**
+     * On message.
+     *
+     * @param session the session
+     * @param message the message
+     * @throws IOException the io exception
+     */
     @OnWebSocketMessage
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void onMessage(Session session, String message) throws IOException {
