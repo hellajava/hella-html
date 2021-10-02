@@ -9,6 +9,7 @@ import sh.hella.html.util.ObjectMapperFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static sh.hella.html.Html.id;
@@ -21,7 +22,7 @@ import static sh.hella.html.Html.id;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@modelType")
 public abstract class Model<M extends Model<?>> extends Section implements Cloneable {
     public static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.get();
-    private static final Map<String, Model<?>> models = new HashMap<>();
+    private static final Map<String, Model<?>> models = new ConcurrentHashMap<>();
     public final String uuid = UUID.randomUUID().toString().replace("-", "");
     private Consumer<M> onUpdate;
 

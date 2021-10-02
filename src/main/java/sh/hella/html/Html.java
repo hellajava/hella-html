@@ -262,6 +262,16 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
+    static AttributeSection className(String value) {
+        return attr("class", value);
+    }
+
+    /**
+     * Clazz attribute section.
+     *
+     * @param value the value
+     * @return the attribute section
+     */
     static AttributeSection clazz(String value) {
         return attr("class", value);
     }
