@@ -257,7 +257,7 @@ public interface Html {
     }
 
     /**
-     * Clazz attribute section.
+     * Class name attribute section.
      *
      * @param value the value
      * @return the attribute section
