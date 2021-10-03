@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An composable section of an HTML document - elements, attributes, text, etc
+ * An composable section of an HTML document - elements, attributes, text, etc.
  */
 public class Section {
-    private transient final List<Section> sections;
+    private final transient List<Section> sections;
 
     /**
      * Instantiates a new Section.

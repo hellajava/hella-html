@@ -4,8 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.atteo.classindex.ClassIndex;
 
+/**
+ * The interface Object mapper factory.
+ */
 public interface ObjectMapperFactory {
 
+    /**
+     * Get object mapper.
+     *
+     * @return the object mapper
+     */
     static ObjectMapper get() {
         ObjectMapper objectMapper = new ObjectMapper();
         Iterable<Class<?>> modelTypes = ClassIndex.getAnnotated(SerializableModel.class);
