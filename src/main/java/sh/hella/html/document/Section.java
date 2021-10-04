@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
  */
 public class Section {
     private final transient List<Section> sections;
+    private transient String pageId;
 
     /**
      * Instantiates a new Section.
@@ -77,5 +78,30 @@ public class Section {
      */
     public Section remove(Section... sections) {
         return remove(Arrays.asList(sections));
+    }
+
+
+    /**
+     * Sets page id.
+     *
+     * @param pageId the page id
+     */
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+        for (Section section : sections) {
+            if (section != null) {
+                section.setPageId(pageId);
+            }
+        }
+    }
+
+
+    /**
+     * Gets page id.
+     *
+     * @return the page id
+     */
+    public String getPageId() {
+        return pageId;
     }
 }
