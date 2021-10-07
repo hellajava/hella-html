@@ -80,7 +80,6 @@ public class Section {
         return remove(Arrays.asList(sections));
     }
 
-
     /**
      * Sets page id.
      *
