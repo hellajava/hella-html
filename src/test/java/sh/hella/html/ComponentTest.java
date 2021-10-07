@@ -44,6 +44,7 @@ public class ComponentTest {
         assertTrue(actual.contains("</div>"), "Contains closing </div> tag");
         assertTrue(actual.contains("</body>"), "Contains closing <body> tag");
 
+        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertTrue(actual.endsWith("</html>"), "Ends with closing html tag");
     }
 }

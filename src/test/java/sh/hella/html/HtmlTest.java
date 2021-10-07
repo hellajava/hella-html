@@ -46,6 +46,7 @@ public class HtmlTest {
 
         assertTrue(actual.endsWith("</html>"), "Ends with closing </html> tag");
 
+        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertFalse(actual.contains("Button was clicked"), "Does not contain serverside RPC handler logic");
     }
 
@@ -79,6 +80,7 @@ public class HtmlTest {
         assertTrue(actual.contains("</div>"), "Contains closing </div> tag>");
         assertTrue(actual.contains("</body>"), "Contains closing </body> tag");
 
+        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertTrue(actual.endsWith("</html>"), "Ends with closing </html> tag");
     }
 }
