@@ -73,7 +73,10 @@ public class HtmlTest {
         assertTrue(actual.contains("</head>"), "Contains closing </head> tag");
 
         assertTrue(actual.contains("<body>"), "Contains <body> tag");
-        assertTrue(actual.contains("Hello, world!"), "Contains Hello World");
+        assertTrue(actual.contains("Hello, world!"), "Contains Hello world");
+        assertTrue(actual.contains("<div custom=\"Test worked\">"), "Contains custom attribute");
+        assertTrue(actual.contains("<a href=\"https://google.com\">visit us</a>"), "Contains expected hyperlink");
+        assertTrue(actual.contains("</div>"), "Contains closing </div> tag>");
         assertTrue(actual.contains("</body>"), "Contains closing </body> tag");
 
         assertTrue(actual.endsWith("</html>"), "Ends with closing </html> tag");
