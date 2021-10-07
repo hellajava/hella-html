@@ -94,7 +94,6 @@ public class Section {
         }
     }
 
-
     /**
      * Gets page id.
      *

@@ -38,7 +38,7 @@ public class HtmlTest {
         assertTrue(actual.contains("<html>"), "Contains html tag");
         assertTrue(actual.contains("<script>"), "Contains script tag");
         assertTrue(actual.contains("function _hella_rpc"), "Contains inline JavaScript");
-        assertTrue(actual.contains("onclick=\"_hella_rpc"), "Contains RPC onclick handler");
+        assertTrue(actual.contains("<button onclick=\"_hella_rpc"), "Contains button with RPC onclick handler");
         assertFalse(actual.contains("Button was clicked"), "Does not contain serverside RPC handler logic");
         assertTrue(actual.endsWith("</html>"), "Ends with closing html tag");
     }
@@ -64,5 +64,4 @@ public class HtmlTest {
         assertTrue(actual.contains("Hello, world!"), "Contains Hello World");
         assertTrue(actual.endsWith("</html>"), "Ends with closing html tag");
     }
-
 }
