@@ -1,63 +1,39 @@
 package sh.hella.html;
 
 import org.junit.jupiter.api.Test;
+import sh.hella.html.document.Component;
+import sh.hella.html.document.Section;
 
-import static sh.hella.html.Html.span;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static sh.hella.html.Html.*;
 import static sh.hella.html.Utilities.fromResource;
-import static sh.hella.html.Utilities.when;
 
 public class ComponentTest {
 
+    public static class WelcomeComponent extends Component {
+        public String name;
 
-    @Test
-    public void model_onClick_setState_should_generate_correct_output() {
-        /*
-        TestModel testModel = new TestModel();
-
-        final String document = html(
-            script(fromResource("hella.js")),
-            body(testModel)
-        ).toString();
-
-        final String expected = "<!DOCTYPE html><html><script>var messageQ = [];\n" +
-                "var webSocket;\n" +
-                "initWebSocket();\n" +
-                "\n" +
-                "function initWebSocket() {\n" +
-                "    webSocket = new WebSocket(\"ws://\" + location.hostname + \":\" + location.port + \"/hella-ws\");\n" +
-                "\n" +
-                "    webSocket.onopen = function(event) {\n" +
-                "        while (messageQ.length != 0) {\n" +
-                "            var msg = messageQ.shift();\n" +
-                "            webSocket.send(msg);\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "    webSocket.onmessage = function (msg) {\n" +
-                "        var data = JSON.parse(msg.data);\n" +
-                "        document.querySelector(\"[data-uuid=\\\"\" + data.uuid + \"\\\"]\").innerHTML = data.body;\n" +
-                "    };\n" +
-                "\n" +
-                "    webSocket.onerror = function(event) {\n" +
-                "        console.error(\"WebSocket error: \" + event);\n" +
-                "    }\n" +
-                "}\n" +
-                "\n" +
-                "function _hella_rpc(uuid, data) {\n" +
-                "    var dataString = JSON.stringify(data);\n" +
-                "    var json = { uuid: uuid, data: dataString };\n" +
-                "    var msg = JSON.stringify(json);\n" +
-                "    if (webSocket.readyState === WebSocket.CLOSED) {\n" +
-                "        initWebSocket();\n" +
-                "        this.messageQ.push(msg);\n" +
-                "    } else {\n" +
-                "        webSocket.send(msg);\n" +
-                "    }\n" +
-                "}</script><body><div><input id=\"test-field\" type=\"text\"></input><span>Test string: Test Button has not been clicked</span><button onclick=\"function(event) { _hella_rpc('";
-        final String expected2 = "', event); }\">Test Button</button></div></body></html>";
-
-        Assertions.assertEquals(expected, document, "Expected HTML is generated");
-        */
+        @Override
+        public Section render() {
+            return div(span(text("Welcome, {}!", name)));
+        }
     }
 
+    @Test
+    public void component_render_should_generate_expected_html() {
+        final WelcomeComponent welcomeComponent = new WelcomeComponent();
+        welcomeComponent.name = "Blake";
+
+        final String actual = html(
+            script(fromResource("hella.js")),
+            body(welcomeComponent)
+        ).toString();
+
+        assertTrue(actual.startsWith("<!DOCTYPE html>"), "Starts with doctype");
+        assertTrue(actual.contains("<html>"), "Contains HTML tag");
+        assertTrue(actual.contains("function _hella_rpc"), "Contains inline JavaScript");
+        assertTrue(actual.contains("<div data-uuid="), "Contains Component div with data-uuid attribute");
+        assertTrue(actual.contains("<span>Welcome, " + welcomeComponent.name + "!</span>"), "Contains rendered model");
+        assertTrue(actual.endsWith("</html>"), "Ends with closing html tag");
+    }
 }

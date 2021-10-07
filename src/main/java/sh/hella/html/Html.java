@@ -29,8 +29,8 @@ public interface Html {
      * @param text the text
      * @return the section
      */
-    static TextSection text(String text) {
-        return new TextSection(text);
+    static TextSection text(String text, Object... args) {
+        return new TextSection(text, args);
     }
 
     // Attributes
