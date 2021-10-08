@@ -2,7 +2,6 @@ package sh.hella.html;
 
 import sh.hella.html.document.ElementSection;
 import sh.hella.html.document.TextSection;
-import sh.hella.html.util.JavaScriptSerializer;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -99,10 +98,6 @@ public interface Utilities {
         } catch (IOException | URISyntaxException ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    static String valueOf(String id) {
-        return JavaScriptSerializer.JS_INJECT_PREFIX + "document.getElementById('" + id + "').value";
     }
 
     /**

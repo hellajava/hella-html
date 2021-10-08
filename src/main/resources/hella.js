@@ -6,6 +6,9 @@ function initWebSocket() {
     webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/hella-ws");
 
     webSocket.onopen = function(event) {
+        var pageId = document.getElementById("page-id").innerHTML;
+        var json = JSON.stringify({ action: "set-page-id", data: pageId });
+        webSocket.send(json);
         while (messageQ.length != 0) {
             var msg = messageQ.shift();
             webSocket.send(msg);
@@ -14,7 +17,7 @@ function initWebSocket() {
 
     webSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
-        document.getElementById(data.uuid).innerHTML = data.body;
+        document.querySelector("[data-uuid=\"" + data.uuid + "\"]").innerHTML = data.body;
     };
 
     webSocket.onerror = function(event) {
@@ -22,12 +25,15 @@ function initWebSocket() {
     }
 }
 
-function _hella_update_model(json) {
-    var msg = JSON.stringify(json);
+function _hella_rpc(uuid, data) {
+    // TODO: there has to be a better way...
+    var dataString = JSON.stringify(data);
+    var rpcString = JSON.stringify({ uuid: uuid, data: dataString });
+    var jsonString = JSON.stringify({ action: "rpc", data: rpcString });
     if (webSocket.readyState === WebSocket.CLOSED) {
         initWebSocket();
-        this.messageQ.push(msg);
+        this.messageQ.push(jsonString);
     } else {
-        webSocket.send(msg);
+        webSocket.send(jsonString);
     }
 }

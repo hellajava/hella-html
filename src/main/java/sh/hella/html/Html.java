@@ -1,11 +1,21 @@
 package sh.hella.html;
 
 import sh.hella.html.document.AttributeSection;
+import sh.hella.html.document.CompositeAttributeSection;
 import sh.hella.html.document.ElementSection;
 import sh.hella.html.document.HtmlElementSection;
-import sh.hella.html.document.JavaScriptSection;
 import sh.hella.html.document.Section;
 import sh.hella.html.document.TextSection;
+import sh.hella.html.event.Event;
+import sh.hella.html.event.EventHandler;
+import sh.hella.html.event.impl.OnChange;
+import sh.hella.html.event.impl.OnClick;
+import sh.hella.html.event.impl.OnInput;
+import sh.hella.html.event.impl.ValueEvent;
+import sh.hella.html.handler.RpcMessageDecoder;
+import sh.hella.html.handler.WebSocketHandler;
+
+import java.util.UUID;
 
 /**
  * The interface Html.
@@ -19,8 +29,8 @@ public interface Html {
      * @param text the text
      * @return the section
      */
-    static TextSection text(String text) {
-        return new TextSection(text);
+    static TextSection text(String text, Object... args) {
+        return new TextSection(text, args);
     }
 
     // Attributes
@@ -37,13 +47,71 @@ public interface Html {
     }
 
     /**
-     * Onclick attribute.
+     * Onclick attribute with event handler.
      *
-     * @param javaScriptSection The javascript section
+     * @param eventHandler The event handler
+     * @return The onclick attribute
+     */
+    static AttributeSection onclick(EventHandler<OnClick> eventHandler) {
+        return onAttribute("onclick", OnClick.class, eventHandler);
+    }
+
+    /**
+     * Onchange attribute section.
+     *
+     * @param eventHandler the event handler
      * @return the attribute section
      */
-    static AttributeSection onclick(JavaScriptSection javaScriptSection) {
-        return new AttributeSection("onclick", javaScriptSection.toString());
+    static AttributeSection onchange(EventHandler<OnChange> eventHandler) {
+        return onAttributeWithValue("onchange", OnChange.class, eventHandler);
+    }
+
+    /**
+     * Oninput attribute section.
+     *
+     * @param eventHandler the event handler
+     * @return the attribute section
+     */
+    static AttributeSection oninput(EventHandler<OnInput> eventHandler) {
+        return onAttributeWithValue("oninput", OnInput.class, eventHandler);
+    }
+
+    /**
+     * On attribute with value.
+     *
+     * @param event The JavaScript event type
+     * @param eventType The class event type
+     * @param eventHandler The event handler
+     * @param <E> The event type
+     * @return the attribute section
+     */
+    static <E extends ValueEvent> AttributeSection onAttributeWithValue(
+            String event, Class<E> eventType, EventHandler<E> eventHandler) {
+        String rpcUuid = UUID.randomUUID().toString();
+        RpcMessageDecoder<E> decoder = new RpcMessageDecoder<E>(eventHandler, eventType);
+        WebSocketHandler.RPC_DECODER_MAP.put(rpcUuid, decoder);
+        String valueSelector = "document.querySelector('[data-rpc-uuid=&quot;" + rpcUuid + "&quot;]').value";
+        return new CompositeAttributeSection(
+                new AttributeSection("data-rpc-uuid", rpcUuid),
+                new AttributeSection(event, "_hella_rpc('" + rpcUuid + "', { value: " + valueSelector + " })")
+        );
+    }
+
+    /**
+     * On attribute section.
+     *
+     * @param <E>          the type parameter
+     * @param event        the event
+     * @param eventType    the event type
+     * @param eventHandler the event handler
+     * @return the attribute section
+     */
+    static <E extends Event> AttributeSection onAttribute(
+            String event, Class<E> eventType, EventHandler<E> eventHandler) {
+        RpcMessageDecoder<E> decoder = new RpcMessageDecoder<E>(eventHandler, eventType);
+        String rpcUuid = UUID.randomUUID().toString();
+        WebSocketHandler.RPC_DECODER_MAP.put(rpcUuid, decoder);
+        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "')");
     }
 
     /**
@@ -548,12 +616,12 @@ public interface Html {
     }
 
     /**
-     * Forr attribute section.
+     * For attribute section.
      *
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection forr(String value) {
+    static AttributeSection htmlFor(String value) {
         return attr("for", value);
     }
 
