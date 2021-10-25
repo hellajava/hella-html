@@ -31,8 +31,8 @@ function _hella_rpc(uuid, data) {
     var rpcString = JSON.stringify({ uuid: uuid, data: dataString });
     var jsonString = JSON.stringify({ action: "rpc", data: rpcString });
     if (webSocket.readyState === WebSocket.CLOSED) {
-        initWebSocket();
         this.messageQ.push(jsonString);
+        initWebSocket();
     } else {
         webSocket.send(jsonString);
     }
