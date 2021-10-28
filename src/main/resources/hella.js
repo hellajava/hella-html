@@ -6,7 +6,7 @@ function initWebSocket() {
     webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/hella-ws");
 
     webSocket.onopen = function(event) {
-        var pageId = document.getElementById("page-id").innerHTML;
+        var pageId = document.documentElement.getAttribute("page-id");
         var json = JSON.stringify({ action: "set-page-id", data: pageId });
         webSocket.send(json);
         while (messageQ.length != 0) {
