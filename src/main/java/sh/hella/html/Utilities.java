@@ -1,6 +1,6 @@
 package sh.hella.html;
 
-import sh.hella.html.document.ElementSection;
+import sh.hella.html.document.Section;
 import sh.hella.html.document.TextSection;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public interface Utilities {
      * @param whenTrue The element section to return when true
      * @return The element section if the condition was true, or {@code null}
      */
-    static ElementSection when(boolean condition, ElementSection whenTrue) {
+    static Section when(boolean condition, Section whenTrue) {
         return condition ? whenTrue : null;
     }
 
@@ -39,7 +39,7 @@ public interface Utilities {
      * @param whenFalse The element section to return when false
      * @return the whenTrue element when true and the whenFalse element when false
      */
-    static ElementSection when(boolean condition, ElementSection whenTrue, ElementSection whenFalse) {
+    static Section when(boolean condition, Section whenTrue, Section whenFalse) {
         return condition ? whenTrue : whenFalse;
     }
 

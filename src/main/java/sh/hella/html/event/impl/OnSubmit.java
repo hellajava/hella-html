@@ -3,7 +3,7 @@ package sh.hella.html.event.impl;
 import sh.hella.html.event.Event;
 
 /**
- * The type On click.
+ * Onsubmit type.
  */
-public class OnClick extends Event {
+public class OnSubmit extends Event {
 }

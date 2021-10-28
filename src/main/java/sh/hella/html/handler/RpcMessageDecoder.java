@@ -12,6 +12,7 @@ import sh.hella.html.event.EventHandler;
  */
 public class RpcMessageDecoder<E extends Event> implements EventHandler<RpcMessage> {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final String rpcUuid;
     private final EventHandler<E> eventHandler;
     private final Class<E> eventType;
 
@@ -21,7 +22,8 @@ public class RpcMessageDecoder<E extends Event> implements EventHandler<RpcMessa
      * @param eventHandler the event handler
      * @param eventType    the event type
      */
-    public RpcMessageDecoder(EventHandler<E> eventHandler, Class<E> eventType) {
+    public RpcMessageDecoder(String rpcUuid, EventHandler<E> eventHandler, Class<E> eventType) {
+        this.rpcUuid = rpcUuid;
         this.eventHandler = eventHandler;
         this.eventType = eventType;
     }
@@ -30,9 +32,38 @@ public class RpcMessageDecoder<E extends Event> implements EventHandler<RpcMessa
     public void handle(RpcMessage rpcMessage) {
         try {
             String content = rpcMessage.data == null ? "{}" : rpcMessage.data;
-            eventHandler.handle(objectMapper.readValue(content, eventType));
+            E event = objectMapper.readValue(content, eventType);
+            event.setSession(rpcMessage.getSession());
+            eventHandler.handle(event);
         } catch (JsonProcessingException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    /**
+     * Gets rpc uuid.
+     *
+     * @return the rpc uuid
+     */
+    public String getRpcUuid() {
+        return rpcUuid;
+    }
+
+    /**
+     * Gets event handler.
+     *
+     * @return the event handler
+     */
+    public EventHandler<E> getEventHandler() {
+        return eventHandler;
+    }
+
+    /**
+     * Gets event type.
+     *
+     * @return the event type
+     */
+    public Class<E> getEventType() {
+        return eventType;
     }
 }

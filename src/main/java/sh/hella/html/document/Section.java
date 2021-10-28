@@ -1,5 +1,8 @@
 package sh.hella.html.document;
 
+import sh.hella.html.handler.WebContext;
+import sh.hella.html.handler.WebSocketHandler;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,18 +84,14 @@ public class Section {
     }
 
     /**
-     * Sets page id.
+     * Gets web context.
      *
-     * @param pageId the page id
+     * @return the web context
      */
-    public void setPageId(String pageId) {
-        this.pageId = pageId;
-        for (Section section : sections) {
-            if (section != null) {
-                section.setPageId(pageId);
-            }
-        }
+    public WebContext getWebContext() {
+        return WebSocketHandler.getContextForPageId(pageId);
     }
+
 
     /**
      * Gets page id.
@@ -101,5 +100,17 @@ public class Section {
      */
     public String getPageId() {
         return pageId;
+    }
+
+    /**
+     * Sets page id.
+     *
+     * @param pageId the page id
+     */
+    public void setPageId(String pageId) {
+        this.pageId = pageId;
+        for (Section section : sections) {
+            section.setPageId(pageId);
+        }
     }
 }

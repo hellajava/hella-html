@@ -6,12 +6,11 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @WebSocket
 public class WebSocketHandler {
-    public static final Map<String, List<Session>> SESSION_MAP = new ConcurrentHashMap<>();
-    public static final Map<String, RpcMessageDecoder<?>> RPC_DECODER_MAP = new ConcurrentHashMap<>();
+    private static final Map<Session, WebContext> sessionContextMap = new ConcurrentHashMap<>();
+    private static final Map<String, WebContext> pageIdContextMap = new ConcurrentHashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(WebSocketHandler.class.getName());
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -32,7 +31,7 @@ public class WebSocketHandler {
      */
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        logger.debug("WebSocket session connected from {}", session.getRemoteAddress());
+        logger.info("WebSocket session connected from {}", session.getRemoteAddress());
     }
 
     /**
@@ -44,14 +43,12 @@ public class WebSocketHandler {
      */
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
-        logger.debug("WebSocket session closed from {}, statusCode={}, reason={}",
-                session.getRemoteAddress(), statusCode, reason);
+        WebContext context = sessionContextMap.get(session);
+        pageIdContextMap.remove(context.getPageId());
+        sessionContextMap.remove(session);
 
-        // Remove the session map entry
-        SESSION_MAP.entrySet().stream()
-                .filter(entry -> entry.getValue().contains(session))
-                .map(Map.Entry::getKey)
-                .findFirst().ifPresent(SESSION_MAP::remove);
+        logger.info("WebSocket session closed from {}, statusCode={}, reason={}",
+                session.getRemoteAddress(), statusCode, reason);
     }
 
     /**
@@ -64,16 +61,38 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void onMessage(Session session, String data) throws IOException {
-        logger.debug("Received message from {}: {}", session.getRemoteAddress(), data);
+        logger.info("Received message from {}: {}", session.getRemoteAddress(), data);
         Message message = objectMapper.readValue(data, Message.class);
         if (message.action.equals("set-page-id")) {
-            SESSION_MAP.computeIfAbsent(message.data, k -> new ArrayList<>()).add(session);
+            String pageId = message.data;
+            WebContext webContext = pageIdContextMap.get(pageId);
+            webContext.setWebSocketSession(session);
+            sessionContextMap.put(session, webContext);
         } else if (message.action.equals("rpc")) {
             RpcMessage rpcMessage = objectMapper.readValue(message.data, RpcMessage.class);
-            if (RPC_DECODER_MAP.containsKey(rpcMessage.uuid)) {
-                RPC_DECODER_MAP.get(rpcMessage.uuid).handle(rpcMessage);
-                // TODO: find a way to clean up this map
-            }
+            WebContext context = sessionContextMap.get(session);
+            context.getRpcMessageDecoderMap().get(rpcMessage.uuid).handle(rpcMessage);
         }
+    }
+
+    /**
+     * Gets a web context for a page ID.
+     * @param pageId The page ID
+     * @return The web context
+     */
+    public static WebContext getContextForPageId(String pageId) {
+        return pageIdContextMap.get(pageId);
+    }
+
+    /**
+     * Sets context for page id.
+     *
+     * @param pageId     the page id
+     * @param webContext the web context
+     * @return the context for page id
+     */
+    public static WebContext setContextForPageId(String pageId, WebContext webContext) {
+        pageIdContextMap.put(pageId, webContext);
+        return webContext;
     }
 }

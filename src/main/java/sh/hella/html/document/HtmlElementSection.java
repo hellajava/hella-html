@@ -1,17 +1,17 @@
 package sh.hella.html.document;
 
+import sh.hella.html.handler.WebContext;
+import sh.hella.html.handler.WebSocketHandler;
+
 import java.util.UUID;
 
-import static sh.hella.html.Html.div;
-import static sh.hella.html.Html.id;
-import static sh.hella.html.Html.style;
-import static sh.hella.html.Html.text;
+import static sh.hella.html.Html.*;
 
 /**
  * The type HtmlElementSection.
  */
 public class HtmlElementSection extends ElementSection {
-    private static final String pageId = UUID.randomUUID().toString();
+    private final String pageId = UUID.randomUUID().toString();
 
     /**
      * Instantiates a new HtmlElementSection.
@@ -24,7 +24,8 @@ public class HtmlElementSection extends ElementSection {
 
     @Override
     public String toString() {
-        add(div(id("page-id"), style("display: none"), text(pageId)));
+        add(attr("page-id", pageId));
+        WebSocketHandler.setContextForPageId(pageId, new WebContext(pageId));
         for (Section section : sections()) {
             section.setPageId(pageId);
         }

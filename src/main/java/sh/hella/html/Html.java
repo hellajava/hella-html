@@ -11,6 +11,7 @@ import sh.hella.html.event.EventHandler;
 import sh.hella.html.event.impl.OnChange;
 import sh.hella.html.event.impl.OnClick;
 import sh.hella.html.event.impl.OnInput;
+import sh.hella.html.event.impl.OnSubmit;
 import sh.hella.html.event.impl.ValueEvent;
 import sh.hella.html.handler.RpcMessageDecoder;
 import sh.hella.html.handler.WebSocketHandler;
@@ -77,6 +78,17 @@ public interface Html {
     }
 
     /**
+     * Onsubmit attribute section.
+     *
+     * @param eventHandler the event handler
+     * @return the attribute section
+     */
+
+    static AttributeSection onsubmit(EventHandler<OnSubmit> eventHandler) {
+        return onAttributePreventDefault("onsubmit", OnSubmit.class, eventHandler);
+    }
+
+    /**
      * On attribute with value.
      *
      * @param event The JavaScript event type
@@ -88,13 +100,11 @@ public interface Html {
     static <E extends ValueEvent> AttributeSection onAttributeWithValue(
             String event, Class<E> eventType, EventHandler<E> eventHandler) {
         String rpcUuid = UUID.randomUUID().toString();
-        RpcMessageDecoder<E> decoder = new RpcMessageDecoder<E>(eventHandler, eventType);
-        WebSocketHandler.RPC_DECODER_MAP.put(rpcUuid, decoder);
         String valueSelector = "document.querySelector('[data-rpc-uuid=&quot;" + rpcUuid + "&quot;]').value";
         return new CompositeAttributeSection(
                 new AttributeSection("data-rpc-uuid", rpcUuid),
                 new AttributeSection(event, "_hella_rpc('" + rpcUuid + "', { value: " + valueSelector + " })")
-        );
+        ).addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
     }
 
     /**
@@ -108,10 +118,25 @@ public interface Html {
      */
     static <E extends Event> AttributeSection onAttribute(
             String event, Class<E> eventType, EventHandler<E> eventHandler) {
-        RpcMessageDecoder<E> decoder = new RpcMessageDecoder<E>(eventHandler, eventType);
         String rpcUuid = UUID.randomUUID().toString();
-        WebSocketHandler.RPC_DECODER_MAP.put(rpcUuid, decoder);
-        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "')");
+        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "')")
+                .addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
+    }
+
+    /**
+     * On attribute section preventing default.
+     *
+     * @param <E>          the type parameter
+     * @param event        the event
+     * @param eventType    the event type
+     * @param eventHandler the event handler
+     * @return the attribute section
+     */
+    static <E extends Event> AttributeSection onAttributePreventDefault(
+            String event, Class<E> eventType, EventHandler<E> eventHandler) {
+        String rpcUuid = UUID.randomUUID().toString();
+        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "'); return false;")
+                .addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
     }
 
     /**

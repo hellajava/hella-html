@@ -3,7 +3,6 @@ package sh.hella.html.document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.jetty.websocket.api.Session;
 import sh.hella.html.handler.UpdateModelResponse;
 import sh.hella.html.handler.WebSocketHandler;
 
@@ -42,11 +41,13 @@ public abstract class Component extends Section {
     public void rehydrate() {
         try {
             String json = objectMapper.writeValueAsString(new UpdateModelResponse(uuid, render().toString()));
-            for (Session session : WebSocketHandler.SESSION_MAP.get(getPageId())) {
-                session.getRemote().sendString(json);
-            }
+            WebSocketHandler.getContextForPageId(getPageId()).getWebSocketSession().getRemote().sendString(json);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public String getUuid() {
+        return uuid;
     }
 }
