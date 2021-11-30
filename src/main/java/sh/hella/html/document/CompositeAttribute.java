@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 /**
  * The type Composite attribute section.
  */
-public class CompositeAttributeSection extends AttributeSection {
+public class CompositeAttribute extends Attribute {
 
     /**
      * Instantiates a new CompositeAttributeSection.
      *
      * @param sections the sections
      */
-    public CompositeAttributeSection(AttributeSection... sections) {
+    public CompositeAttribute(Attribute... sections) {
         super("", "");
         this.sections().addAll(Arrays.asList(sections));
     }

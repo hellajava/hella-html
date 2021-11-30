@@ -3,8 +3,8 @@ package sh.hella.html.document;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import sh.hella.html.handler.UpdateModelResponse;
-import sh.hella.html.handler.WebSocketHandler;
+import sh.hella.html.Hella;
+import sh.hella.html.handler.UpdateComponentMessage;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -19,7 +19,7 @@ import static sh.hella.html.Html.attr;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@modelType")
 public abstract class Component extends Section {
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private final String uuid = UUID.randomUUID().toString();
+    private final String componentId = UUID.randomUUID().toString().replace("-", "");
 
     /**
      * Renders the model.
@@ -31,7 +31,7 @@ public abstract class Component extends Section {
     @Override
     public String toString() {
         sections().clear();
-        add(render().add(attr("data-uuid", uuid)));
+        add(render().add(attr("data-component-id", componentId)));
         return super.toString();
     }
 
@@ -40,14 +40,10 @@ public abstract class Component extends Section {
      */
     public void rehydrate() {
         try {
-            String json = objectMapper.writeValueAsString(new UpdateModelResponse(uuid, render().toString()));
-            WebSocketHandler.getContextForPageId(getPageId()).getWebSocketSession().getRemote().sendString(json);
+            String json = objectMapper.writeValueAsString(new UpdateComponentMessage(componentId, render().toString()));
+            Hella.CONTEXT.get().getWebSocketSession().getRemote().sendString(json);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 }

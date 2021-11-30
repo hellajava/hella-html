@@ -1,8 +1,5 @@
 package sh.hella.html.document;
 
-import sh.hella.html.handler.WebContext;
-import sh.hella.html.handler.WebSocketHandler;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -82,16 +79,6 @@ public class Section {
     public Section remove(Section... sections) {
         return remove(Arrays.asList(sections));
     }
-
-    /**
-     * Gets web context.
-     *
-     * @return the web context
-     */
-    public WebContext getWebContext() {
-        return WebSocketHandler.getContextForPageId(pageId);
-    }
-
 
     /**
      * Gets page id.

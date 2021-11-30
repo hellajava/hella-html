@@ -2,13 +2,20 @@ var messageQ = [];
 var webSocket;
 initWebSocket();
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 function initWebSocket() {
     webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/hella-ws");
 
     webSocket.onopen = function(event) {
-        var pageId = document.documentElement.getAttribute("page-id");
-        var json = JSON.stringify({ action: "set-page-id", data: pageId });
-        webSocket.send(json);
+        webSocket.send(JSON.stringify({
+            eventId: "__hella_setWebContextId",
+            eventBody: getCookie("X-Hella-WebContext-ID")
+        }));
         while (messageQ.length != 0) {
             var msg = messageQ.shift();
             webSocket.send(msg);
@@ -17,7 +24,7 @@ function initWebSocket() {
 
     webSocket.onmessage = function (msg) {
         var data = JSON.parse(msg.data);
-        document.querySelector("[data-uuid=\"" + data.uuid + "\"]").innerHTML = data.body;
+        document.querySelector("[data-component-id=\"" + data.componentId + "\"]").innerHTML = data.body;
     };
 
     webSocket.onerror = function(event) {
@@ -25,11 +32,13 @@ function initWebSocket() {
     }
 }
 
-function _hella_rpc(uuid, data) {
-    // TODO: there has to be a better way...
-    var dataString = JSON.stringify(data);
-    var rpcString = JSON.stringify({ uuid: uuid, data: dataString });
-    var jsonString = JSON.stringify({ action: "rpc", data: rpcString });
+function _hella_event(eventId) {
+    var jsonString = JSON.stringify({
+        eventId: eventId,
+        eventBody: JSON.stringify({
+            value: document.querySelector('[data-event-id="' + eventId + '"]').value
+        })
+    });
     if (webSocket.readyState === WebSocket.CLOSED) {
         initWebSocket();
         this.messageQ.push(jsonString);

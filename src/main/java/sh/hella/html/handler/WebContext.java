@@ -1,7 +1,11 @@
 package sh.hella.html.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.websocket.api.Session;
+import sh.hella.html.event.Event;
+import sh.hella.html.event.EventDispatcher;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,18 +13,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * The type Web context.
  */
 public class WebContext {
+    private String id;
     private Session webSocketSession;
-    private String pageId;
-    private final Map<String, RpcMessageDecoder<?>> rpcMessageDecoderMap = new ConcurrentHashMap<>();
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+    private final Map<String, EventDispatcher<? extends Event>> eventDispatcherMap = new ConcurrentHashMap<>();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Instantiates a new Web context.
      *
-     * @param pageId the page id
+     * @param id the page id
      */
-    public WebContext(String pageId) {
-        this.pageId = pageId;
+    public WebContext(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Sets url.
+     *
+     * @param url the url
+     */
+    public void setUrl(String url) {
+        SetUrlMessage message = new SetUrlMessage(url);
+        try {
+            this.webSocketSession.getRemote().sendString(objectMapper.writeValueAsString(message));
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**
@@ -42,33 +61,6 @@ public class WebContext {
     }
 
     /**
-     * Gets page id.
-     *
-     * @return the page id
-     */
-    public String getPageId() {
-        return pageId;
-    }
-
-    /**
-     * Sets page id.
-     *
-     * @param pageId the page id
-     */
-    public void setPageId(String pageId) {
-        this.pageId = pageId;
-    }
-
-    /**
-     * Gets rpc message decoder map.
-     *
-     * @return the rpc message decoder map
-     */
-    public Map<String, RpcMessageDecoder<?>> getRpcMessageDecoderMap() {
-        return rpcMessageDecoderMap;
-    }
-
-    /**
      * Sets an attribute.
      *
      * @param key   the key
@@ -84,7 +76,35 @@ public class WebContext {
      * @param key the key
      * @return the object
      */
-    public Object attribute(String key) {
-        return attributes.get(key);
+    @SuppressWarnings("unchecked")
+    public <T> T attribute(String key) {
+        return (T) attributes.get(key);
+    }
+
+    /**
+     * Gets ID.
+     *
+     * @return the ID
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets ID.
+     *
+     * @param id the ID
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets event dispatcher map.
+     *
+     * @return the event dispatcher map
+     */
+    public Map<String, EventDispatcher<? extends Event>> getEventDispatcherMap() {
+        return eventDispatcherMap;
     }
 }

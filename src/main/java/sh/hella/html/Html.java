@@ -1,9 +1,9 @@
 package sh.hella.html;
 
-import sh.hella.html.document.AttributeSection;
-import sh.hella.html.document.CompositeAttributeSection;
-import sh.hella.html.document.ElementSection;
-import sh.hella.html.document.HtmlElementSection;
+import sh.hella.html.document.Attribute;
+import sh.hella.html.document.Element;
+import sh.hella.html.document.EventAwareAttribute;
+import sh.hella.html.document.HtmlElement;
 import sh.hella.html.document.Section;
 import sh.hella.html.document.TextSection;
 import sh.hella.html.event.Event;
@@ -12,11 +12,6 @@ import sh.hella.html.event.impl.OnChange;
 import sh.hella.html.event.impl.OnClick;
 import sh.hella.html.event.impl.OnInput;
 import sh.hella.html.event.impl.OnSubmit;
-import sh.hella.html.event.impl.ValueEvent;
-import sh.hella.html.handler.RpcMessageDecoder;
-import sh.hella.html.handler.WebSocketHandler;
-
-import java.util.UUID;
 
 /**
  * The interface Html.
@@ -43,8 +38,8 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection attr(String key, String value) {
-        return new AttributeSection(key, value);
+    static Attribute attr(String key, String value) {
+        return new Attribute(key, value);
     }
 
     /**
@@ -53,7 +48,7 @@ public interface Html {
      * @param eventHandler The event handler
      * @return The onclick attribute
      */
-    static AttributeSection onclick(EventHandler<OnClick> eventHandler) {
+    static Attribute onclick(EventHandler<OnClick> eventHandler) {
         return onAttribute("onclick", OnClick.class, eventHandler);
     }
 
@@ -63,8 +58,8 @@ public interface Html {
      * @param eventHandler the event handler
      * @return the attribute section
      */
-    static AttributeSection onchange(EventHandler<OnChange> eventHandler) {
-        return onAttributeWithValue("onchange", OnChange.class, eventHandler);
+    static Attribute onchange(EventHandler<OnChange> eventHandler) {
+        return onAttribute("onchange", OnChange.class, eventHandler);
     }
 
     /**
@@ -73,8 +68,8 @@ public interface Html {
      * @param eventHandler the event handler
      * @return the attribute section
      */
-    static AttributeSection oninput(EventHandler<OnInput> eventHandler) {
-        return onAttributeWithValue("oninput", OnInput.class, eventHandler);
+    static Attribute oninput(EventHandler<OnInput> eventHandler) {
+        return onAttribute("oninput", OnInput.class, eventHandler);
     }
 
     /**
@@ -84,8 +79,8 @@ public interface Html {
      * @return the attribute section
      */
 
-    static AttributeSection onsubmit(EventHandler<OnSubmit> eventHandler) {
-        return onAttributePreventDefault("onsubmit", OnSubmit.class, eventHandler);
+    static Attribute onsubmit(EventHandler<OnSubmit> eventHandler) {
+        return onAttribute("onsubmit", OnSubmit.class, eventHandler);
     }
 
     /**
@@ -97,46 +92,8 @@ public interface Html {
      * @param <E> The event type
      * @return the attribute section
      */
-    static <E extends ValueEvent> AttributeSection onAttributeWithValue(
-            String event, Class<E> eventType, EventHandler<E> eventHandler) {
-        String rpcUuid = UUID.randomUUID().toString();
-        String valueSelector = "document.querySelector('[data-rpc-uuid=&quot;" + rpcUuid + "&quot;]').value";
-        return new CompositeAttributeSection(
-                new AttributeSection("data-rpc-uuid", rpcUuid),
-                new AttributeSection(event, "_hella_rpc('" + rpcUuid + "', { value: " + valueSelector + " })")
-        ).addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
-    }
-
-    /**
-     * On attribute section.
-     *
-     * @param <E>          the type parameter
-     * @param event        the event
-     * @param eventType    the event type
-     * @param eventHandler the event handler
-     * @return the attribute section
-     */
-    static <E extends Event> AttributeSection onAttribute(
-            String event, Class<E> eventType, EventHandler<E> eventHandler) {
-        String rpcUuid = UUID.randomUUID().toString();
-        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "')")
-                .addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
-    }
-
-    /**
-     * On attribute section preventing default.
-     *
-     * @param <E>          the type parameter
-     * @param event        the event
-     * @param eventType    the event type
-     * @param eventHandler the event handler
-     * @return the attribute section
-     */
-    static <E extends Event> AttributeSection onAttributePreventDefault(
-            String event, Class<E> eventType, EventHandler<E> eventHandler) {
-        String rpcUuid = UUID.randomUUID().toString();
-        return new AttributeSection(event, "_hella_rpc('" + rpcUuid + "'); return false;")
-                .addRpcMessageDecoder(new RpcMessageDecoder<>(rpcUuid, eventHandler, eventType));
+    static <E extends Event> Attribute onAttribute(String event, Class<E> eventType, EventHandler<E> eventHandler) {
+        return new EventAwareAttribute(event, eventType, eventHandler);
     }
 
     /**
@@ -145,7 +102,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection accept(String value) {
+    static Attribute accept(String value) {
         return attr("href", value);
     }
 
@@ -155,7 +112,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection accept_charset(String value) {
+    static Attribute accept_charset(String value) {
         return attr("accept-charset", value);
     }
 
@@ -165,7 +122,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection accesskey(String value) {
+    static Attribute accesskey(String value) {
         return attr("accesskey", value);
     }
 
@@ -175,7 +132,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection action(String value) {
+    static Attribute action(String value) {
         return attr("action", value);
     }
 
@@ -185,7 +142,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection align(String value) {
+    static Attribute align(String value) {
         return attr("align", value);
     }
 
@@ -195,7 +152,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection allow(String value) {
+    static Attribute allow(String value) {
         return attr("allow", value);
     }
 
@@ -205,7 +162,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection alt(String value) {
+    static Attribute alt(String value) {
         return attr("alt", value);
     }
 
@@ -215,7 +172,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection async(String value) {
+    static Attribute async(String value) {
         return attr("async", value);
     }
 
@@ -225,7 +182,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection autocapitalize(String value) {
+    static Attribute autocapitalize(String value) {
         return attr("autocapitalize", value);
     }
 
@@ -235,7 +192,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection autocomplete(String value) {
+    static Attribute autocomplete(String value) {
         return attr("autocomplete", value);
     }
 
@@ -245,7 +202,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection autofocus(String value) {
+    static Attribute autofocus(String value) {
         return attr("autofocus", value);
     }
 
@@ -255,7 +212,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection autoplay(String value) {
+    static Attribute autoplay(String value) {
         return attr("autoplay", value);
     }
 
@@ -265,7 +222,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection background(String value) {
+    static Attribute background(String value) {
         return attr("background", value);
     }
 
@@ -275,7 +232,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection bgcolor(String value) {
+    static Attribute bgcolor(String value) {
         return attr("bgcolor", value);
     }
 
@@ -285,7 +242,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection border(String value) {
+    static Attribute border(String value) {
         return attr("border", value);
     }
 
@@ -295,7 +252,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection buffered(String value) {
+    static Attribute buffered(String value) {
         return attr("buffered", value);
     }
 
@@ -305,7 +262,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection capture(String value) {
+    static Attribute capture(String value) {
         return attr("capture", value);
     }
 
@@ -315,7 +272,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection challenge(String value) {
+    static Attribute challenge(String value) {
         return attr("challenge", value);
     }
 
@@ -325,7 +282,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection charset(String value) {
+    static Attribute charset(String value) {
         return attr("charset", value);
     }
 
@@ -335,7 +292,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection checked(String value) {
+    static Attribute checked(String value) {
         return attr("checked", value);
     }
 
@@ -345,7 +302,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection cite(String value) {
+    static Attribute cite(String value) {
         return attr("cite", value);
     }
 
@@ -355,7 +312,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection className(String value) {
+    static Attribute className(String value) {
         return attr("class", value);
     }
 
@@ -365,7 +322,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection clazz(String value) {
+    static Attribute clazz(String value) {
         return attr("class", value);
     }
 
@@ -375,7 +332,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection classs(String value) {
+    static Attribute classs(String value) {
         return attr("class", value);
     }
 
@@ -385,7 +342,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection code(String value) {
+    static Attribute code(String value) {
         return attr("code", value);
     }
 
@@ -395,7 +352,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection codebase(String value) {
+    static Attribute codebase(String value) {
         return attr("codebase", value);
     }
 
@@ -405,7 +362,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection color(String value) {
+    static Attribute color(String value) {
         return attr("color", value);
     }
 
@@ -415,7 +372,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection cols(String value) {
+    static Attribute cols(String value) {
         return attr("cols", value);
     }
 
@@ -425,7 +382,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection colspan(String value) {
+    static Attribute colspan(String value) {
         return attr("colspan", value);
     }
 
@@ -435,7 +392,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection content(String value) {
+    static Attribute content(String value) {
         return attr("content", value);
     }
 
@@ -445,7 +402,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection contenteditable(String value) {
+    static Attribute contenteditable(String value) {
         return attr("contenteditable", value);
     }
 
@@ -455,7 +412,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection contextmenu(String value) {
+    static Attribute contextmenu(String value) {
         return attr("contextmenu", value);
     }
 
@@ -465,7 +422,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection controls(String value) {
+    static Attribute controls(String value) {
         return attr("controls", value);
     }
 
@@ -475,7 +432,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection coords(String value) {
+    static Attribute coords(String value) {
         return attr("coords", value);
     }
 
@@ -485,7 +442,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection crossorigin(String value) {
+    static Attribute crossorigin(String value) {
         return attr("crossorigin", value);
     }
 
@@ -495,7 +452,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection csp(String value) {
+    static Attribute csp(String value) {
         return attr("csp", value);
     }
 
@@ -505,7 +462,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection data(String value) {
+    static Attribute data(String value) {
         return attr("data", value);
     }
 
@@ -516,7 +473,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection data_(String key, String value) {
+    static Attribute data_(String key, String value) {
         return attr("data-" + key, value);
     }
 
@@ -526,7 +483,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection datetime(String value) {
+    static Attribute datetime(String value) {
         return attr("datetime", value);
     }
 
@@ -536,7 +493,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection decoding(String value) {
+    static Attribute decoding(String value) {
         return attr("decoding", value);
     }
 
@@ -546,7 +503,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection dfault(String value) {
+    static Attribute dfault(String value) {
         return attr("default", value);
     }
 
@@ -556,7 +513,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection defaultt(String value) {
+    static Attribute defaultt(String value) {
         return attr("default", value);
     }
 
@@ -566,7 +523,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection defer(String value) {
+    static Attribute defer(String value) {
         return attr("defer", value);
     }
 
@@ -576,7 +533,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection dir(String value) {
+    static Attribute dir(String value) {
         return attr("dir", value);
     }
 
@@ -586,7 +543,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection dirname(String value) {
+    static Attribute dirname(String value) {
         return attr("dirname", value);
     }
 
@@ -596,7 +553,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection disabled(String value) {
+    static Attribute disabled(String value) {
         return attr("disabled", value);
     }
 
@@ -606,7 +563,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection download(String value) {
+    static Attribute download(String value) {
         return attr("download", value);
     }
 
@@ -616,7 +573,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection draggable(String value) {
+    static Attribute draggable(String value) {
         return attr("draggable", value);
     }
 
@@ -626,7 +583,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection enctype(String value) {
+    static Attribute enctype(String value) {
         return attr("enctype", value);
     }
 
@@ -636,7 +593,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection enterkeyhint(String value) {
+    static Attribute enterkeyhint(String value) {
         return attr("enterkeyhint", value);
     }
 
@@ -646,7 +603,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection htmlFor(String value) {
+    static Attribute htmlFor(String value) {
         return attr("for", value);
     }
 
@@ -656,7 +613,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection form(String value) {
+    static Attribute form(String value) {
         return attr("form", value);
     }
 
@@ -666,7 +623,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection formaction(String value) {
+    static Attribute formaction(String value) {
         return attr("formaction", value);
     }
 
@@ -676,7 +633,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection formenctype(String value) {
+    static Attribute formenctype(String value) {
         return attr("formenctype", value);
     }
 
@@ -686,7 +643,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection formmethod(String value) {
+    static Attribute formmethod(String value) {
         return attr("formmethod", value);
     }
 
@@ -696,7 +653,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection formnovalidate(String value) {
+    static Attribute formnovalidate(String value) {
         return attr("formnovalidate", value);
     }
 
@@ -706,7 +663,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection formtarget(String value) {
+    static Attribute formtarget(String value) {
         return attr("formtarget", value);
     }
 
@@ -716,7 +673,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection headers(String value) {
+    static Attribute headers(String value) {
         return attr("headers", value);
     }
 
@@ -726,7 +683,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection height(String value) {
+    static Attribute height(String value) {
         return attr("height", value);
     }
 
@@ -736,7 +693,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection hidden(String value) {
+    static Attribute hidden(String value) {
         return attr("hidden", value);
     }
 
@@ -746,7 +703,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection high(String value) {
+    static Attribute high(String value) {
         return attr("high", value);
     }
 
@@ -756,7 +713,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection href(String value) {
+    static Attribute href(String value) {
         return attr("href", value);
     }
 
@@ -766,7 +723,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection hreflang(String value) {
+    static Attribute hreflang(String value) {
         return attr("hreflang", value);
     }
 
@@ -776,7 +733,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection http_equiv(String value) {
+    static Attribute http_equiv(String value) {
         return attr("http-equiv", value);
     }
 
@@ -786,7 +743,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection icon(String value) {
+    static Attribute icon(String value) {
         return attr("icon", value);
     }
 
@@ -796,7 +753,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection id(String value) {
+    static Attribute id(String value) {
         return attr("id", value);
     }
 
@@ -806,7 +763,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection importance(String value) {
+    static Attribute importance(String value) {
         return attr("importance", value);
     }
 
@@ -816,7 +773,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection integrity(String value) {
+    static Attribute integrity(String value) {
         return attr("integrity", value);
     }
 
@@ -826,7 +783,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection intrinsicsize(String value) {
+    static Attribute intrinsicsize(String value) {
         return attr("intrinsicsize", value);
     }
 
@@ -836,7 +793,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection inputmode(String value) {
+    static Attribute inputmode(String value) {
         return attr("inputmode", value);
     }
 
@@ -846,7 +803,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection ismap(String value) {
+    static Attribute ismap(String value) {
         return attr("ismap", value);
     }
 
@@ -856,7 +813,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection itemprop(String value) {
+    static Attribute itemprop(String value) {
         return attr("itemprop", value);
     }
 
@@ -866,7 +823,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection keytype(String value) {
+    static Attribute keytype(String value) {
         return attr("keytype", value);
     }
 
@@ -876,7 +833,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection kind(String value) {
+    static Attribute kind(String value) {
         return attr("kind", value);
     }
 
@@ -886,7 +843,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection label(String value) {
+    static Attribute label(String value) {
         return attr("label", value);
     }
 
@@ -896,7 +853,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection lang(String value) {
+    static Attribute lang(String value) {
         return attr("lang", value);
     }
 
@@ -906,7 +863,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection language(String value) {
+    static Attribute language(String value) {
         return attr("language", value);
     }
 
@@ -916,7 +873,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection loading(String value) {
+    static Attribute loading(String value) {
         return attr("loading", value);
     }
 
@@ -926,7 +883,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection list(String value) {
+    static Attribute list(String value) {
         return attr("list", value);
     }
 
@@ -936,7 +893,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection loop(String value) {
+    static Attribute loop(String value) {
         return attr("loop", value);
     }
 
@@ -946,7 +903,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection low(String value) {
+    static Attribute low(String value) {
         return attr("low", value);
     }
 
@@ -956,7 +913,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection manifest(String value) {
+    static Attribute manifest(String value) {
         return attr("manifest", value);
     }
 
@@ -966,7 +923,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection max(String value) {
+    static Attribute max(String value) {
         return attr("max", value);
     }
 
@@ -976,7 +933,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection maxlength(String value) {
+    static Attribute maxlength(String value) {
         return attr("maxlength", value);
     }
 
@@ -986,7 +943,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection minlength(String value) {
+    static Attribute minlength(String value) {
         return attr("minlength", value);
     }
 
@@ -996,7 +953,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection media(String value) {
+    static Attribute media(String value) {
         return attr("media", value);
     }
 
@@ -1006,7 +963,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection method(String value) {
+    static Attribute method(String value) {
         return attr("method", value);
     }
 
@@ -1016,7 +973,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection min(String value) {
+    static Attribute min(String value) {
         return attr("min", value);
     }
 
@@ -1026,7 +983,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection multiple(String value) {
+    static Attribute multiple(String value) {
         return attr("multiple", value);
     }
 
@@ -1036,7 +993,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection muted(String value) {
+    static Attribute muted(String value) {
         return attr("muted", value);
     }
 
@@ -1046,7 +1003,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection name(String value) {
+    static Attribute name(String value) {
         return attr("name", value);
     }
 
@@ -1056,7 +1013,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection novalidate(String value) {
+    static Attribute novalidate(String value) {
         return attr("novalidate", value);
     }
 
@@ -1066,7 +1023,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection open(String value) {
+    static Attribute open(String value) {
         return attr("open", value);
     }
 
@@ -1076,7 +1033,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection optimum(String value) {
+    static Attribute optimum(String value) {
         return attr("optimum", value);
     }
 
@@ -1086,7 +1043,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection pattern(String value) {
+    static Attribute pattern(String value) {
         return attr("pattern", value);
     }
 
@@ -1096,7 +1053,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection ping(String value) {
+    static Attribute ping(String value) {
         return attr("ping", value);
     }
 
@@ -1106,7 +1063,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection placeholder(String value) {
+    static Attribute placeholder(String value) {
         return attr("placeholder", value);
     }
 
@@ -1116,7 +1073,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection poster(String value) {
+    static Attribute poster(String value) {
         return attr("poster", value);
     }
 
@@ -1126,7 +1083,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection preload(String value) {
+    static Attribute preload(String value) {
         return attr("preload", value);
     }
 
@@ -1136,7 +1093,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection radiogroup(String value) {
+    static Attribute radiogroup(String value) {
         return attr("radiogroup", value);
     }
 
@@ -1146,7 +1103,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection readonly(String value) {
+    static Attribute readonly(String value) {
         return attr("readonly", value);
     }
 
@@ -1156,7 +1113,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection referrerpolicy(String value) {
+    static Attribute referrerpolicy(String value) {
         return attr("referrerpolicy", value);
     }
 
@@ -1166,7 +1123,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection rel(String value) {
+    static Attribute rel(String value) {
         return attr("rel", value);
     }
 
@@ -1176,7 +1133,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection required(String value) {
+    static Attribute required(String value) {
         return attr("required", value);
     }
 
@@ -1186,7 +1143,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection reversed(String value) {
+    static Attribute reversed(String value) {
         return attr("reversed", value);
     }
 
@@ -1196,7 +1153,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection rows(String value) {
+    static Attribute rows(String value) {
         return attr("rows", value);
     }
 
@@ -1206,7 +1163,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection rowspan(String value) {
+    static Attribute rowspan(String value) {
         return attr("rowspan", value);
     }
 
@@ -1216,7 +1173,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection sandbox(String value) {
+    static Attribute sandbox(String value) {
         return attr("sandbox", value);
     }
 
@@ -1226,7 +1183,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection scope(String value) {
+    static Attribute scope(String value) {
         return attr("scope", value);
     }
 
@@ -1236,7 +1193,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection scoped(String value) {
+    static Attribute scoped(String value) {
         return attr("scoped", value);
     }
 
@@ -1246,7 +1203,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection selected(String value) {
+    static Attribute selected(String value) {
         return attr("selected", value);
     }
 
@@ -1256,7 +1213,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection shape(String value) {
+    static Attribute shape(String value) {
         return attr("shape", value);
     }
 
@@ -1266,7 +1223,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection size(String value) {
+    static Attribute size(String value) {
         return attr("size", value);
     }
 
@@ -1276,7 +1233,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection sizes(String value) {
+    static Attribute sizes(String value) {
         return attr("sizes", value);
     }
 
@@ -1286,7 +1243,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection slot(String value) {
+    static Attribute slot(String value) {
         return attr("slot", value);
     }
 
@@ -1296,7 +1253,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection span(String value) {
+    static Attribute span(String value) {
         return attr("span", value);
     }
 
@@ -1306,7 +1263,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection spellcheck(String value) {
+    static Attribute spellcheck(String value) {
         return attr("spellcheck", value);
     }
 
@@ -1316,7 +1273,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection src(String value) {
+    static Attribute src(String value) {
         return attr("src", value);
     }
 
@@ -1326,7 +1283,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection srcdoc(String value) {
+    static Attribute srcdoc(String value) {
         return attr("srcdoc", value);
     }
 
@@ -1336,7 +1293,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection srclang(String value) {
+    static Attribute srclang(String value) {
         return attr("srclang", value);
     }
 
@@ -1346,7 +1303,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection srcset(String value) {
+    static Attribute srcset(String value) {
         return attr("srcset", value);
     }
 
@@ -1356,7 +1313,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection start(String value) {
+    static Attribute start(String value) {
         return attr("start", value);
     }
 
@@ -1366,7 +1323,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection step(String value) {
+    static Attribute step(String value) {
         return attr("step", value);
     }
 
@@ -1376,7 +1333,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection style(String value) {
+    static Attribute style(String value) {
         return attr("style", value);
     }
 
@@ -1386,7 +1343,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection summary(String value) {
+    static Attribute summary(String value) {
         return attr("summary", value);
     }
 
@@ -1396,7 +1353,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection tabindex(String value) {
+    static Attribute tabindex(String value) {
         return attr("tabindex", value);
     }
 
@@ -1406,7 +1363,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection target(String value) {
+    static Attribute target(String value) {
         return attr("target", value);
     }
 
@@ -1416,7 +1373,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection title(String value) {
+    static Attribute title(String value) {
         return attr("title", value);
     }
 
@@ -1426,7 +1383,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection translate(String value) {
+    static Attribute translate(String value) {
         return attr("translate", value);
     }
 
@@ -1436,7 +1393,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection type(String value) {
+    static Attribute type(String value) {
         return attr("type", value);
     }
 
@@ -1446,7 +1403,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection usemap(String value) {
+    static Attribute usemap(String value) {
         return attr("usemap", value);
     }
 
@@ -1456,7 +1413,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection value(String value) {
+    static Attribute value(String value) {
         return attr("value", value);
     }
 
@@ -1466,7 +1423,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection width(String value) {
+    static Attribute width(String value) {
         return attr("width", value);
     }
 
@@ -1476,7 +1433,7 @@ public interface Html {
      * @param value the value
      * @return the attribute section
      */
-    static AttributeSection wrap(String value) {
+    static Attribute wrap(String value) {
         return attr("wrap", value);
     }
 
@@ -1489,8 +1446,8 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection tag(String name, Section... children) {
-        return new ElementSection(name, children);
+    static Element tag(String name, Section... children) {
+        return new Element(name, children);
     }
 
     // Main root
@@ -1501,8 +1458,8 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection html(Section... children) {
-        return new HtmlElementSection(children);
+    static Element html(Section... children) {
+        return new HtmlElement(children);
     }
 
     // Document metadata
@@ -1513,7 +1470,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection base(Section... children) {
+    static Element base(Section... children) {
         return tag("base", children);
     }
 
@@ -1523,7 +1480,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection head(Section... children) {
+    static Element head(Section... children) {
         return tag("head", children);
     }
 
@@ -1533,7 +1490,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection link(Section... children) {
+    static Element link(Section... children) {
         return tag("link", children);
     }
 
@@ -1543,7 +1500,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection meta(Section... children) {
+    static Element meta(Section... children) {
         return tag("meta", children);
     }
 
@@ -1553,7 +1510,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection style(Section... children) {
+    static Element style(Section... children) {
         return tag("style", children);
     }
 
@@ -1563,7 +1520,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection title(Section... children) {
+    static Element title(Section... children) {
         return tag("title", children);
     }
 
@@ -1575,7 +1532,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection body(Section... children) {
+    static Element body(Section... children) {
         return tag("body", children);
     }
 
@@ -1588,7 +1545,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection address(Section... children) {
+    static Element address(Section... children) {
         return tag("address", children);
     }
 
@@ -1598,7 +1555,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection article(Section... children) {
+    static Element article(Section... children) {
         return tag("article", children);
     }
 
@@ -1608,7 +1565,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection aside(Section... children) {
+    static Element aside(Section... children) {
         return tag("aside", children);
     }
 
@@ -1618,7 +1575,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection footer(Section... children) {
+    static Element footer(Section... children) {
         return tag("footer", children);
     }
 
@@ -1628,7 +1585,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection header(Section... children) {
+    static Element header(Section... children) {
         return tag("header", children);
     }
 
@@ -1638,7 +1595,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h1(Section... children) {
+    static Element h1(Section... children) {
         return tag("h1", children);
     }
 
@@ -1648,7 +1605,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h2(Section... children) {
+    static Element h2(Section... children) {
         return tag("h2", children);
     }
 
@@ -1658,7 +1615,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h3(Section... children) {
+    static Element h3(Section... children) {
         return tag("h3", children);
     }
 
@@ -1668,7 +1625,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h4(Section... children) {
+    static Element h4(Section... children) {
         return tag("h4", children);
     }
 
@@ -1678,7 +1635,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h5(Section... children) {
+    static Element h5(Section... children) {
         return tag("h5", children);
     }
 
@@ -1688,7 +1645,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection h6(Section... children) {
+    static Element h6(Section... children) {
         return tag("h6", children);
     }
 
@@ -1698,7 +1655,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection main(Section... children) {
+    static Element main(Section... children) {
         return tag("main", children);
     }
 
@@ -1708,7 +1665,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection nav(Section... children) {
+    static Element nav(Section... children) {
         return tag("nav", children);
     }
 
@@ -1718,7 +1675,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection section(Section... children) {
+    static Element section(Section... children) {
         return tag("section", children);
     }
 
@@ -1730,7 +1687,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection blockquote(Section... children) {
+    static Element blockquote(Section... children) {
         return tag("blockquote", children);
     }
 
@@ -1740,7 +1697,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection dd(Section... children) {
+    static Element dd(Section... children) {
         return tag("dd", children);
     }
 
@@ -1750,7 +1707,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection div(Section... children) {
+    static Element div(Section... children) {
         return tag("div", children);
     }
 
@@ -1760,7 +1717,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection dl(Section... children) {
+    static Element dl(Section... children) {
         return tag("dl", children);
     }
 
@@ -1770,7 +1727,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection dt(Section... children) {
+    static Element dt(Section... children) {
         return tag("dt", children);
     }
 
@@ -1780,7 +1737,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection figcaption(Section... children) {
+    static Element figcaption(Section... children) {
         return tag("figcaption", children);
     }
 
@@ -1790,7 +1747,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection figure(Section... children) {
+    static Element figure(Section... children) {
         return tag("figure", children);
     }
 
@@ -1800,7 +1757,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection hr(Section... children) {
+    static Element hr(Section... children) {
         return tag("hr", children);
     }
 
@@ -1810,7 +1767,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection li(Section... children) {
+    static Element li(Section... children) {
         return tag("li", children);
     }
 
@@ -1820,7 +1777,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection ol(Section... children) {
+    static Element ol(Section... children) {
         return tag("ol", children);
     }
 
@@ -1830,7 +1787,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection p(Section... children) {
+    static Element p(Section... children) {
         return tag("p", children);
     }
 
@@ -1840,7 +1797,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection pre(Section... children) {
+    static Element pre(Section... children) {
         return tag("pre", children);
     }
 
@@ -1850,7 +1807,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection ul(Section... children) {
+    static Element ul(Section... children) {
         return tag("ul", children);
     }
 
@@ -1862,7 +1819,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection a(Section... children) {
+    static Element a(Section... children) {
         return tag("a", children);
     }
 
@@ -1872,7 +1829,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection abbr(Section... children) {
+    static Element abbr(Section... children) {
         return tag("abbr", children);
     }
 
@@ -1882,7 +1839,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection b(Section... children) {
+    static Element b(Section... children) {
         return tag("b", children);
     }
 
@@ -1892,7 +1849,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection bdi(Section... children) {
+    static Element bdi(Section... children) {
         return tag("bdi", children);
     }
 
@@ -1902,7 +1859,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection bdo(Section... children) {
+    static Element bdo(Section... children) {
         return tag("bdo", children);
     }
 
@@ -1912,7 +1869,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection br(Section... children) {
+    static Element br(Section... children) {
         return tag("br", children);
     }
 
@@ -1922,7 +1879,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection cite(Section... children) {
+    static Element cite(Section... children) {
         return tag("cite", children);
     }
 
@@ -1932,7 +1889,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection code(Section... children) {
+    static Element code(Section... children) {
         return tag("code", children);
     }
 
@@ -1942,7 +1899,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection data(Section... children) {
+    static Element data(Section... children) {
         return tag("data", children);
     }
 
@@ -1952,7 +1909,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection dfn(Section... children) {
+    static Element dfn(Section... children) {
         return tag("dfn", children);
     }
 
@@ -1962,7 +1919,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection em(Section... children) {
+    static Element em(Section... children) {
         return tag("em", children);
     }
 
@@ -1972,7 +1929,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection i(Section... children) {
+    static Element i(Section... children) {
         return tag("i", children);
     }
 
@@ -1982,7 +1939,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection kbd(Section... children) {
+    static Element kbd(Section... children) {
         return tag("kbd", children);
     }
 
@@ -1992,7 +1949,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection mark(Section... children) {
+    static Element mark(Section... children) {
         return tag("mark", children);
     }
 
@@ -2002,7 +1959,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection q(Section... children) {
+    static Element q(Section... children) {
         return tag("q", children);
     }
 
@@ -2012,7 +1969,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection rp(Section... children) {
+    static Element rp(Section... children) {
         return tag("rp", children);
     }
 
@@ -2022,7 +1979,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection rt(Section... children) {
+    static Element rt(Section... children) {
         return tag("rt", children);
     }
 
@@ -2032,7 +1989,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection ruby(Section... children) {
+    static Element ruby(Section... children) {
         return tag("ruby", children);
     }
 
@@ -2042,7 +1999,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection s(Section... children) {
+    static Element s(Section... children) {
         return tag("s", children);
     }
 
@@ -2052,7 +2009,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection samp(Section... children) {
+    static Element samp(Section... children) {
         return tag("samp", children);
     }
 
@@ -2062,7 +2019,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection small(Section... children) {
+    static Element small(Section... children) {
         return tag("small", children);
     }
 
@@ -2072,7 +2029,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection span(Section... children) {
+    static Element span(Section... children) {
         return tag("span", children);
     }
 
@@ -2082,7 +2039,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection strong(Section... children) {
+    static Element strong(Section... children) {
         return tag("strong", children);
     }
 
@@ -2092,7 +2049,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection sub(Section... children) {
+    static Element sub(Section... children) {
         return tag("sub", children);
     }
 
@@ -2102,7 +2059,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection sup(Section... children) {
+    static Element sup(Section... children) {
         return tag("sup", children);
     }
 
@@ -2112,7 +2069,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection time(Section... children) {
+    static Element time(Section... children) {
         return tag("time", children);
     }
 
@@ -2122,7 +2079,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection u(Section... children) {
+    static Element u(Section... children) {
         return tag("u", children);
     }
 
@@ -2132,7 +2089,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection var(Section... children) {
+    static Element var(Section... children) {
         return tag("var", children);
     }
 
@@ -2142,7 +2099,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection wbr(Section... children) {
+    static Element wbr(Section... children) {
         return tag("wbr", children);
     }
 
@@ -2154,7 +2111,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection area(Section... children) {
+    static Element area(Section... children) {
         return tag("area", children);
     }
 
@@ -2164,7 +2121,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection audio(Section... children) {
+    static Element audio(Section... children) {
         return tag("audio", children);
     }
 
@@ -2174,7 +2131,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection img(Section... children) {
+    static Element img(Section... children) {
         return tag("img", children);
     }
 
@@ -2184,7 +2141,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection map(Section... children) {
+    static Element map(Section... children) {
         return tag("map", children);
     }
 
@@ -2194,7 +2151,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection track(Section... children) {
+    static Element track(Section... children) {
         return tag("track", children);
     }
 
@@ -2204,7 +2161,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection video(Section... children) {
+    static Element video(Section... children) {
         return tag("video", children);
     }
 
@@ -2216,7 +2173,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection embed(Section... children) {
+    static Element embed(Section... children) {
         return tag("embed", children);
     }
 
@@ -2226,7 +2183,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection iframe(Section... children) {
+    static Element iframe(Section... children) {
         return tag("iframe", children);
     }
 
@@ -2236,7 +2193,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection object(Section... children) {
+    static Element object(Section... children) {
         return tag("objcet", children);
     }
 
@@ -2246,7 +2203,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection param(Section... children) {
+    static Element param(Section... children) {
         return tag("param", children);
     }
 
@@ -2256,7 +2213,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection picture(Section... children) {
+    static Element picture(Section... children) {
         return tag("picture", children);
     }
 
@@ -2266,7 +2223,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection portal(Section... children) {
+    static Element portal(Section... children) {
         return tag("portal", children);
     }
 
@@ -2276,7 +2233,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection source(Section... children) {
+    static Element source(Section... children) {
         return tag("source", children);
     }
 
@@ -2288,7 +2245,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection svg(Section... children) {
+    static Element svg(Section... children) {
         return tag("svg", children);
     }
 
@@ -2298,7 +2255,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection math(Section... children) {
+    static Element math(Section... children) {
         return tag("math", children);
     }
 
@@ -2310,7 +2267,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection canvas(Section... children) {
+    static Element canvas(Section... children) {
         return tag("canvas", children);
     }
 
@@ -2320,7 +2277,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection noscript(Section... children) {
+    static Element noscript(Section... children) {
         return tag("noscript", children);
     }
 
@@ -2330,7 +2287,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection script(Section... children) {
+    static Element script(Section... children) {
         return tag("script", children);
     }
 
@@ -2342,7 +2299,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection del(Section... children) {
+    static Element del(Section... children) {
         return tag("del", children);
     }
 
@@ -2352,7 +2309,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection ins(Section... children) {
+    static Element ins(Section... children) {
         return tag("ins", children);
     }
 
@@ -2364,7 +2321,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection caption(Section... children) {
+    static Element caption(Section... children) {
         return tag("caption", children);
     }
 
@@ -2374,7 +2331,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection col(Section... children) {
+    static Element col(Section... children) {
         return tag("col", children);
     }
 
@@ -2384,7 +2341,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection colgroup(Section... children) {
+    static Element colgroup(Section... children) {
         return tag("colgroup", children);
     }
 
@@ -2394,7 +2351,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection table(Section... children) {
+    static Element table(Section... children) {
         return tag("table", children);
     }
 
@@ -2404,7 +2361,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection tbody(Section... children) {
+    static Element tbody(Section... children) {
         return tag("tbody", children);
     }
 
@@ -2414,7 +2371,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection td(Section... children) {
+    static Element td(Section... children) {
         return tag("td", children);
     }
 
@@ -2424,7 +2381,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection tfoot(Section... children) {
+    static Element tfoot(Section... children) {
         return tag("tfoot", children);
     }
 
@@ -2434,7 +2391,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection th(Section... children) {
+    static Element th(Section... children) {
         return tag("th", children);
     }
 
@@ -2444,7 +2401,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection thead(Section... children) {
+    static Element thead(Section... children) {
         return tag("thead", children);
     }
 
@@ -2454,7 +2411,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection tr(Section... children) {
+    static Element tr(Section... children) {
         return tag("tr", children);
     }
 
@@ -2466,7 +2423,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection button(Section... children) {
+    static Element button(Section... children) {
         return tag("button", children);
     }
 
@@ -2476,7 +2433,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection datalist(Section... children) {
+    static Element datalist(Section... children) {
         return tag("datalist", children);
     }
 
@@ -2486,7 +2443,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection fieldset(Section... children) {
+    static Element fieldset(Section... children) {
         return tag("fieldset", children);
     }
 
@@ -2496,7 +2453,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection form(Section... children) {
+    static Element form(Section... children) {
         return tag("form", children);
     }
 
@@ -2506,7 +2463,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection input(Section... children) {
+    static Element input(Section... children) {
         return tag("input", children);
     }
 
@@ -2516,7 +2473,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection label(Section... children) {
+    static Element label(Section... children) {
         return tag("label", children);
     }
 
@@ -2526,7 +2483,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection legend(Section... children) {
+    static Element legend(Section... children) {
         return tag("legend", children);
     }
 
@@ -2536,7 +2493,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection meter(Section... children) {
+    static Element meter(Section... children) {
         return tag("meter", children);
     }
 
@@ -2546,7 +2503,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection optgroup(Section... children) {
+    static Element optgroup(Section... children) {
         return tag("optgroup", children);
     }
 
@@ -2556,7 +2513,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection option(Section... children) {
+    static Element option(Section... children) {
         return tag("option", children);
     }
 
@@ -2566,7 +2523,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection output(Section... children) {
+    static Element output(Section... children) {
         return tag("output", children);
     }
 
@@ -2576,7 +2533,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection progress(Section... children) {
+    static Element progress(Section... children) {
         return tag("progress", children);
     }
 
@@ -2586,7 +2543,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection select(Section... children) {
+    static Element select(Section... children) {
         return tag("select", children);
     }
 
@@ -2596,7 +2553,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection textarea(Section... children) {
+    static Element textarea(Section... children) {
         return tag("textarea", children);
     }
 
@@ -2608,7 +2565,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection details(Section... children) {
+    static Element details(Section... children) {
         return tag("details", children);
     }
 
@@ -2618,7 +2575,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection dialog(Section... children) {
+    static Element dialog(Section... children) {
         return tag("dialog", children);
     }
 
@@ -2628,7 +2585,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection menu(Section... children) {
+    static Element menu(Section... children) {
         return tag("menu", children);
     }
 
@@ -2638,7 +2595,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection summary(Section... children) {
+    static Element summary(Section... children) {
         return tag("summary", children);
     }
 
@@ -2648,7 +2605,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection slot(Section... children) {
+    static Element slot(Section... children) {
         return tag("slot", children);
     }
 
@@ -2658,7 +2615,7 @@ public interface Html {
      * @param children the children
      * @return the element
      */
-    static ElementSection template(Section... children) {
+    static Element template(Section... children) {
         return tag("template", children);
     }
 }

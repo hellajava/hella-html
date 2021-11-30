@@ -1,26 +1,25 @@
 package sh.hella.html.event;
 
-import sh.hella.html.handler.WebContext;
-
 /**
  * The abstract class Event.
  */
 public abstract class Event {
-    private WebContext session;
+    private String id;
+    private String value;
 
-    /**
-     * Gets session
-     * @return The session
-     */
-    public WebContext getSession() {
-        return session;
+    public String getId() {
+        return id;
     }
 
-    /**
-     * Sets session.
-     * @param session The session
-     */
-    public void setSession(WebContext session) {
-        this.session = session;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

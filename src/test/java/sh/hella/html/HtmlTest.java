@@ -1,7 +1,7 @@
 package sh.hella.html;
 
 import org.junit.jupiter.api.Test;
-import sh.hella.html.document.ElementSection;
+import sh.hella.html.handler.WebContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,6 +25,9 @@ public class HtmlTest {
 
     @Test
     public void onclick_should_generate_expected_html() {
+        WebContext webContext = new WebContext("testContext");
+        Hella.CONTEXT.set(webContext);
+
         final String actual = html(
             head(script(fromResource("hella.js"))),
             body(button(onclick((event) -> System.out.println("Button was clicked"))))
@@ -35,18 +38,17 @@ public class HtmlTest {
 
         assertTrue(actual.contains("<head>"), "Contains <head> tag");
         assertTrue(actual.contains("<script>"), "Contains <script> tag");
-        assertTrue(actual.contains("function _hella_rpc"), "Contains inline JavaScript");
+        assertTrue(actual.contains("function _hella_event"), "Contains inline JavaScript");
         assertTrue(actual.contains("</script>"), "Contains closing </script> tag");
         assertTrue(actual.contains("</head>"), "Contains closing </head> tag");
 
         assertTrue(actual.contains("<body>"), "Contains <body> tag");
-        assertTrue(actual.contains("<button onclick=\"_hella_rpc"), "Contains button with RPC onclick handler");
+        assertTrue(actual.contains("onclick=\"_hella_event"), "Contains onclick handler");
         assertTrue(actual.contains("</button>"), "Contains closing </button> tag");
         assertTrue(actual.contains("</body>"), "Contains closing </body> tag");
 
         assertTrue(actual.endsWith("</html>"), "Ends with closing </html> tag");
 
-        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertFalse(actual.contains("Button was clicked"), "Does not contain serverside RPC handler logic");
     }
 
@@ -80,7 +82,6 @@ public class HtmlTest {
         assertTrue(actual.contains("</div>"), "Contains closing </div> tag>");
         assertTrue(actual.contains("</body>"), "Contains closing </body> tag");
 
-        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertTrue(actual.endsWith("</html>"), "Ends with closing </html> tag");
     }
 }

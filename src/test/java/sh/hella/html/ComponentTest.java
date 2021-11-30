@@ -34,17 +34,16 @@ public class ComponentTest {
 
         assertTrue(actual.contains("<head>"), "Contains <head> tag");
         assertTrue(actual.contains("<script>"), "Contains <script> tag");
-        assertTrue(actual.contains("function _hella_rpc"), "Contains inline JavaScript");
+        assertTrue(actual.contains("function _hella_event"), "Contains inline JavaScript");
         assertTrue(actual.contains("</script>"), "Contains closing </script> tag");
         assertTrue(actual.contains("</head>"), "Contains closing </head> tag");
 
         assertTrue(actual.contains("<body>"), "Contains <body> tag");
-        assertTrue(actual.contains("<div data-uuid="), "Contains component <div> with data-uuid attribute");
+        assertTrue(actual.contains("<div data-component-id="), "Contains component <div> with data-component-id attribute");
         assertTrue(actual.contains("<span>Welcome, " + welcomeComponent.name + "!</span>"), "Contains rendered model");
         assertTrue(actual.contains("</div>"), "Contains closing </div> tag");
         assertTrue(actual.contains("</body>"), "Contains closing <body> tag");
 
-        assertTrue(actual.contains("<div id=\"page-id\" style=\"display: none\">"), "Contains hidden pageId tag");
         assertTrue(actual.endsWith("</html>"), "Ends with closing html tag");
     }
 }

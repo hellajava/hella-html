@@ -4,16 +4,16 @@ package sh.hella.html.document;
  * A {@link Section} representing an HTML element with attributes and children.
  */
 @SuppressWarnings("unused")
-public class ElementSection extends Section {
+public class Element extends Section {
     private final transient String name;
 
     /**
-     * Instantiates a new ElementSection.
+     * Instantiates a new Element.
      *
      * @param name     the name
      * @param children the children
      */
-    public ElementSection(String name, Section... children) {
+    public Element(String name, Section... children) {
         super(children);
         this.name = name;
     }
@@ -26,7 +26,7 @@ public class ElementSection extends Section {
             if (section == null) {
                 continue;
             }
-            if (section instanceof AttributeSection) {
+            if (section instanceof Attribute) {
                 attributes.append(" ").append(section);
             } else {
                 elements.append(section);
